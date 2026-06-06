@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>整形外科的テストナビ</title>
+<!-- v20260606101005 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #f0f4f8;
+  --surface:     #ffffff;
+  --surface2:    #e8edf4;
+  --accent:      #0a3d7c;
+  --accent-d:    #062758;
+  --accent-l:    #dce8f8;
+  --accent-mid:  #1a5cbf;
+  --text:        #0a0f1a;
+  --text-m:      #3a4558;
+  --text-f:      #7a8aaa;
+  --border:      #c8d4e8;
+  --border-m:    #a8b8d8;
+
+  --c-method:    #003080;  --bg-method:   #e0eaff;
+  --c-positive:  #0a4a00;  --bg-positive: #d8f0d8;
+  --c-purpose:   #5a3000;  --bg-purpose:  #fff0c8;
+  --c-disease:   #780000;  --bg-disease:  #ffe8e0;
+
+  --header-h:60px; --sub-h:30px; --sidebar-w:210px; --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;font-size:15px;line-height:1.65;
+  -webkit-text-size-adjust:100%;
+  font-feature-settings:'pkna';
+}
+
+/* ── ヘッダー ── */
+header{
+  background:var(--accent);height:var(--header-h);
+  padding:0 1.25rem;
+  position:fixed;top:0;left:0;right:0;z-index:400;
+  box-shadow:0 3px 16px rgba(10,30,80,0.3);
+  display:flex;align-items:center;gap:12px;
+  border-bottom:3px solid var(--accent-mid);
+}
+.menu-btn{
+  display:none;flex-shrink:0;
+  background:rgba(255,255,255,0.12);border:none;color:#fff;
+  width:36px;height:36px;border-radius:8px;
+  cursor:pointer;align-items:center;justify-content:center;
+}
+.menu-btn svg{width:18px;height:18px;}
+.header-logo{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap;
+}
+.logo-main{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.8rem;font-weight:500;
+  color:rgba(255,255,255,0.75);letter-spacing:0.06em;
+}
+.logo-accent{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.2rem;font-weight:900;
+  color:#fff;letter-spacing:0.04em;
+  text-shadow:0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* 検索：虫眼鏡ボタン → クリックで展開 */
+.search-wrap{
+  margin-left:auto;position:relative;
+  display:flex;align-items:center;
+}
+.search-toggle{
+  width:36px;height:36px;border-radius:8px;
+  background:rgba(255,255,255,0.12);border:none;color:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;flex-shrink:0;
+}
+.search-toggle:hover{background:rgba(255,255,255,0.22);}
+.search-toggle svg{width:17px;height:17px;}
+#search{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.85rem;padding:7px 12px 7px 12px;
+  border-radius:8px;border:1px solid rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.18);color:#fff;
+  outline:none;
+  width:0;opacity:0;
+  transition:width 0.25s ease,opacity 0.2s ease,padding 0.25s ease;
+  margin-right:0;
+}
+#search::placeholder{color:rgba(255,255,255,0.5);}
+#search.open{width:190px;opacity:1;margin-right:6px;}
+#search:focus{background:rgba(255,255,255,0.26);}
+
+.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.total-badge{font-size:0.75rem;color:rgba(255,255,255,0.6);white-space:nowrap;padding:0 2px;}
+#hl-mode-btn{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+  color:#fff;border-radius:8px;padding:6px 12px;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.78rem;
+  cursor:pointer;white-space:nowrap;transition:all 0.15s;
+}
+#hl-mode-btn svg{width:13px;height:13px;}
+#hl-mode-btn.active{background:rgba(254,240,138,0.3);border-color:rgba(254,240,138,0.6);color:#fef08a;}
+
+/* ── サブヘッダー ── */
+.subheader{
+  background:var(--accent-d);height:var(--sub-h);
+  padding:0 1.25rem;
+  display:flex;align-items:center;
+  position:fixed;top:var(--header-h);left:0;right:0;z-index:390;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.subheader-creator{font-size:0.72rem;color:rgba(255,255,255,0.85);letter-spacing:0.04em;white-space:nowrap;}
+
+/* ── レイアウト ── */
+.layout{display:flex;padding-top:calc(var(--header-h) + var(--sub-h));min-height:100vh;}
+
+/* ── サイドバー ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  position:fixed;top:calc(var(--header-h) + var(--sub-h));
+  left:0;bottom:0;overflow-y:auto;z-index:300;
+  transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  display:flex;flex-direction:column;
+}
+.sidebar-inner{flex:1;padding:1rem 0;}
+.sidebar-section-lbl{
+  font-size:0.65rem;font-weight:500;color:var(--text-f);
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:0 1rem 0.4rem;margin-top:0.25rem;
+}
+.sidebar-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:0.6rem 1rem;
+  background:none;border:none;border-left:3px solid transparent;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.88rem;font-weight:500;color:var(--text-m);
+  cursor:pointer;text-align:left;gap:6px;
+  transition:background 0.12s,color 0.12s,border-color 0.12s;
+}
+.sidebar-btn:hover{background:var(--accent-l);color:var(--accent-mid);}
+.sidebar-btn.active{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent);font-weight:500;}
+.sidebar-btn span:first-child{flex:1;}
+.sidebar-count{
+  font-size:0.68rem;color:var(--text-f);
+  background:var(--surface2);border-radius:10px;padding:1px 7px;flex-shrink:0;
+}
+.sidebar-btn.active .sidebar-count{background:rgba(35,77,53,0.12);color:var(--accent-mid);}
+.sidebar-divider{height:1px;background:var(--border);margin:0.75rem 1rem;}
+.sidebar-footer{padding:0 0 1rem;}
+.sidebar-expand-btn{
+  display:flex;align-items:center;gap:7px;
+  width:100%;padding:0.55rem 1rem;
+  background:none;border:none;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.82rem;color:var(--text-m);
+  cursor:pointer;transition:color 0.12s;
+}
+.sidebar-expand-btn:hover{color:var(--accent);}
+.sidebar-expand-btn svg{width:14px;height:14px;flex-shrink:0;transition:transform 0.25s;}
+.sidebar-expand-btn.expanded svg{transform:rotate(180deg);}
+.sidebar-overlay{display:none;position:fixed;inset:0;z-index:290;background:rgba(0,0,0,0.4);}
+
+/* ── コンテンツ ── */
+.content{flex:1;margin-left:var(--sidebar-w);padding:1.5rem 1.5rem 5rem;min-width:0;}
+
+/* ── カテゴリ ── */
+.cat-section{margin-bottom:2.25rem;}
+.cat-anchor{display:block;height:0;visibility:hidden;}
+.cat-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:0.9rem;
+  position:sticky;top:0;z-index:10;background:var(--bg);padding:0.5rem 0;
+}
+.cat-badge{
+  font-family:'Noto Sans JP',sans-serif;font-size:0.75rem;font-weight:600;
+  background:var(--accent);color:#fff;
+  padding:2px 12px;border-radius:20px;letter-spacing:0.06em;white-space:nowrap;
+}
+.cat-count{font-size:0.72rem;color:var(--text-f);background:var(--surface2);border-radius:10px;padding:1px 8px;}
+.cat-line{flex:1;height:1px;background:var(--border-m);}
+
+/* ── 検査カード ── */
+.test-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:8px;
+  box-shadow:0 2px 8px rgba(10,30,80,0.12);overflow:hidden;
+  transition:box-shadow 0.15s,border-color 0.15s;
+}
+.test-item:hover{box-shadow:0 4px 18px rgba(10,30,80,0.18);border-color:var(--border-m);}
+.test-item.open{border-color:var(--border-m);}
+.test-summary{
+  display:grid;grid-template-columns:1fr auto auto;
+  align-items:center;padding:0.9rem 1.1rem;
+  cursor:pointer;gap:10px;
+  -webkit-tap-highlight-color:transparent;user-select:none;
+}
+.test-name{font-size:1rem;font-weight:500;color:var(--text);line-height:1.45;word-break:keep-all;overflow-wrap:break-word;}
+.test-disease-tag{
+  font-size:0.7rem;color:#5a1000;background:#fdd0c0;display:none;
+  padding:2px 8px;border-radius:12px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;flex-shrink:0;
+}
+.chevron{width:17px;height:17px;flex-shrink:0;color:var(--text-f);transition:transform 0.25s ease;}
+.test-item.open .chevron{transform:rotate(180deg);}
+
+/* ── 詳細パネル ── */
+.test-detail{display:none;border-top:1px solid var(--border);padding:1rem 1.1rem 1.1rem;background:#fafaf7;}
+.test-item.open .test-detail{display:block;animation:slideDown 0.2s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.detail-block{border-radius:8px;padding:0.85rem 1.05rem;border:1px solid transparent;}
+.detail-block.method  {grid-column:1/-1;background:var(--bg-method);  border-color:#90aad8;}
+.detail-block.positive{background:var(--bg-positive);border-color:#50b870;}
+.detail-block.purpose {background:var(--bg-purpose); border-color:#d0a020;}
+.detail-block.disease {grid-column:1/-1;background:var(--bg-disease); border-color:#d07050;}
+.detail-lbl{
+  display:inline-flex;align-items:center;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.08em;
+  padding:2px 10px;border-radius:10px;margin-bottom:7px;
+}
+.detail-block.method   .detail-lbl{background:#8aaae0;color:#001e50;font-weight:700;}
+.detail-block.positive .detail-lbl{background:#50b070;color:#002a10;font-weight:700;}
+.detail-block.purpose  .detail-lbl{background:#c89820;color:#2a1400;font-weight:700;}
+.detail-block.disease  .detail-lbl{background:#c86040;color:#3a0800;font-weight:700;}
+
+/* ── テキスト本文 ── */
+.detail-txt{
+  font-size:0.92rem;line-height:1.9;
+  /* 通常時はOS標準の選択挙動。マーキングモード中はカスタム制御 */
+  user-select:text;
+}
+.detail-block.method   .detail-txt{color:var(--c-method);}
+.detail-block.positive .detail-txt{color:var(--c-positive);font-weight:500;}
+.detail-block.purpose  .detail-txt{color:#3a2200;}
+.detail-block.disease  .detail-txt{color:var(--c-disease);font-weight:500;}
+
+/* ── 蛍光ハイライトspan ── */
+.hl{border-radius:3px;padding:0 1px;cursor:pointer;}
+.hl:hover{opacity:0.8;}
+.hl-yellow{background:#fef08a;}
+.hl-green {background:#bbf7d0;}
+.hl-pink  {background:#fecdd3;}
+.hl-blue  {background:#bae6fd;}
+
+/* ── 色選択ポップオーバー ── */
+#hl-popover{
+  display:none;position:fixed;z-index:9999;
+  background:#18243c;border-radius:12px;
+  padding:10px 12px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.45);
+  flex-direction:column;gap:8px;align-items:stretch;
+  min-width:200px;
+}
+#hl-popover.visible{display:flex;}
+.hl-pop-title{font-size:0.68rem;color:rgba(255,255,255,0.4);text-align:center;letter-spacing:0.06em;}
+.hl-colors-row{display:flex;gap:8px;justify-content:center;}
+.hl-color-btn{
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.2);
+  cursor:pointer;transition:transform 0.12s,border-color 0.12s;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.hl-color-btn:hover{transform:scale(1.15);border-color:rgba(255,255,255,0.7);}
+.hl-color-btn.selected{border-color:#fff;border-width:3px;}
+.hl-color-btn.selected::after{content:'✓';font-size:12px;font-weight:700;color:#333;}
+.hl-color-btn.c-yellow{background:#fef08a;}
+.hl-color-btn.c-green {background:#bbf7d0;}
+.hl-color-btn.c-pink  {background:#fecdd3;}
+.hl-color-btn.c-blue  {background:#bae6fd;}
+.hl-pop-actions{display:flex;gap:6px;}
+.hl-pop-btn{
+  flex:1;font-size:0.72rem;padding:5px 8px;border-radius:6px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);
+  cursor:pointer;transition:background 0.1s;text-align:center;
+}
+.hl-pop-btn:hover{background:rgba(255,255,255,0.22);}
+.hl-pop-btn.danger{border-color:rgba(255,100,100,0.4);color:#ffaaaa;}
+.hl-pop-btn.danger:hover{background:rgba(255,60,60,0.2);}
+
+/* ── 長押しフィードバック ── */
+@keyframes holdPulse{
+  0%  {box-shadow:0 0 0 0 rgba(26,58,107,0.4);}
+  70% {box-shadow:0 0 0 8px rgba(26,58,107,0);}
+  100%{box-shadow:0 0 0 0 rgba(26,58,107,0);}
+}
+.holding{animation:holdPulse 0.5s ease;}
+
+mark{background:#ffe066;color:#5a3000;border-radius:2px;padding:0 2px;font-weight:600;}
+.empty{text-align:center;padding:4rem;color:var(--text-f);font-size:0.95rem;}
+
+/* ══ メディアクエリ ══ */
+@media(max-width:767px){
+  :root{--header-h:52px;--sub-h:0px;--sidebar-w:230px;}
+  .menu-btn{display:flex;}
+  .logo-accent{font-size:1rem;} .logo-main{font-size:0.72rem;}
+  .subheader{display:none;}
+  .total-badge{display:none;}
+  #search.open{width:150px;}
+  .sidebar{transform:translateX(-100%);box-shadow:none;z-index:350;}
+  .sidebar.open{transform:translateX(0);box-shadow:6px 0 24px rgba(0,0,0,0.2);}
+  .sidebar-overlay.open{display:block;}
+  .content{margin-left:0;padding:1rem 0.9rem 5rem;}
+  .test-summary{grid-template-columns:1fr auto;padding:0.85rem 0.9rem;}
+  .test-disease-tag{display:none;}
+  .test-name{font-size:0.95rem;}
+  .detail-grid{grid-template-columns:1fr;gap:8px;}
+  .detail-block.method,.detail-block.disease{grid-column:1;}
+  .detail-txt{font-size:0.9rem;line-height:1.95;}
+  .test-detail{padding:0.85rem 0.9rem;}
+}
+@media(min-width:768px) and (max-width:1024px){
+  :root{--sidebar-w:190px;}
+  .subheader{padding-left:calc(var(--sidebar-w) + 1.25rem);}
+  .content{padding:1.5rem 1.25rem 4rem;}
+  .test-disease-tag{max-width:130px;}
+}
+@media(min-width:1025px){
+  .content{max-width:calc(var(--sidebar-w) + 860px);}
+}
+
+
+  .exam-field.method,.exam-field.disease{grid-column:1;}
+  .result-breakdown{grid-template-columns:1fr 1fr;}
+}
+
+/* ════ 試験モードボタン（サイドバー） ════ */
+.sidebar-exam-wrap {
+  margin: 0.5rem 0.85rem 0.25rem;
+}
+.sidebar-exam-label {
+  font-size:0.62rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-f);
+  text-align:center;display:block;margin-bottom:0.4rem;
+}
+.sidebar-exam-btn {
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:1rem 1.25rem;
+  background:linear-gradient(135deg,#1a3a6b 0%,#2d5fbf 60%,#1a7abf 100%);
+  color:#fff;border:none;border-radius:14px;
+  font-family:'Noto Serif JP',sans-serif;font-size:1.05rem;font-weight:600;
+  cursor:pointer;letter-spacing:0.05em;
+  box-shadow:0 6px 20px rgba(26,58,107,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition:all 0.18s;
+  position:relative;overflow:hidden;
+}
+.sidebar-exam-btn::before {
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+.sidebar-exam-btn:hover {
+  transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(26,58,107,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.sidebar-exam-btn:active { transform:translateY(0); }
+.sidebar-exam-btn svg { width:20px;height:20px;flex-shrink:0;opacity:0.9; }
+.sidebar-exam-btn-sub {
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.68rem;font-weight:400;
+  opacity:0.7;display:block;margin-top:1px;
+}
+
+/* ════ モーダル共通 ════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(10,20,50,0.55);
+  align-items:flex-start;justify-content:center;
+  padding:1rem;overflow-y:auto;
+}
+.modal-overlay.visible{display:flex;}
+.modal{
+  background:#fff;border-radius:16px;
+  width:100%;max-width:560px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  animation:modalIn 0.22s ease;
+  margin:auto;
+}
+/* iPad以上でモーダルを広く */
+@media(min-width:768px){
+  .modal{ max-width:80vw; max-height:88vh; }
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.modal-header{
+  background:var(--accent);color:#fff;
+  padding:1.1rem 1.4rem;border-radius:16px 16px 0 0;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10;
+}
+.modal-header h2{font-family:'Noto Sans JP',sans-serif;font-size:1rem;font-weight:600;letter-spacing:0.04em;}
+.modal-header-right{display:flex;align-items:center;gap:10px;}
+.modal-close{
+  background:rgba(255,255,255,0.15);border:none;color:#fff;
+  width:30px;height:30px;border-radius:6px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.modal-close:hover{background:rgba(255,255,255,0.25);}
+.modal-body{padding:1.25rem 1.4rem 1.5rem;}
+
+/* ════ セットアップ ════ */
+.setup-section{margin-bottom:1.25rem;}
+.setup-label{font-size:0.78rem;font-weight:500;color:var(--text-m);letter-spacing:0.04em;margin-bottom:0.5rem;}
+.cat-check-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.cat-check-btn{
+  font-family:'Noto Sans JP',sans-serif;font-size:0.8rem;
+  padding:4px 12px;border-radius:20px;
+  border:1px solid var(--border-m);
+  background:var(--surface2);color:var(--text-m);
+  cursor:pointer;transition:all 0.12s;
+}
+.cat-check-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.count-row{display:flex;align-items:center;gap:10px;}
+.count-row input[type=range]{flex:1;accent-color:var(--accent);}
+.count-val{font-size:1rem;font-weight:600;color:var(--accent);min-width:28px;text-align:center;}
+.available-note{font-size:0.75rem;color:var(--text-f);margin-top:4px;}
+.setup-start-btn{
+  width:100%;padding:0.85rem;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:10px;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.95rem;font-weight:500;
+  cursor:pointer;transition:opacity 0.15s;margin-top:0.5rem;
+}
+.setup-start-btn:hover{opacity:0.88;}
+.setup-start-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* ════ 試験リスト ════ */
+.exam-list-note{
+  font-size:0.78rem;color:var(--text-f);
+  margin-bottom:1rem;padding:8px 12px;
+  background:var(--surface2);border-radius:8px;
+  border-left:3px solid var(--accent-l);
+}
+.exam-list{display:flex;flex-direction:column;gap:5px;margin-bottom:0.75rem;}
+
+.exam-row{
+  display:grid;
+  grid-template-columns:32px 1fr auto;
+  grid-template-rows:auto auto;
+  align-items:center;gap:6px 10px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:10px;padding:0.65rem 1rem;
+  transition:border-color 0.12s,box-shadow 0.12s;
+}
+.exam-row:hover{border-color:var(--border-m);box-shadow:0 2px 6px rgba(0,0,0,0.07);}
+.exam-reveal-row {
+  grid-column:2/3;grid-row:2;
+}
+.exam-row-num{
+  font-size:0.75rem;font-weight:700;color:#fff;
+  background:var(--accent);border-radius:50%;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.exam-row-name{
+  font-size:1.05rem;font-weight:600;color:var(--text);
+  word-break:keep-all;overflow-wrap:break-word;line-height:1.3;
+  font-family:'Noto Sans JP',sans-serif;
+}
+
+/* ○▲× ボタングループ */
+.judge-group{display:flex;gap:6px;flex-shrink:0;}
+.jbtn{
+  width:40px;height:40px;border-radius:8px;
+  border:1.5px solid var(--border-m);
+  background:var(--surface2);
+  font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.12s;line-height:1;
+  -webkit-tap-highlight-color:transparent;
+  flex-shrink:0;
+}
+.jbtn:hover{filter:brightness(0.93);}
+/* ○ 正解 */
+.jbtn.j-good          {color:#666;}
+.jbtn.j-good.selected {background:#d6f0e2;border-color:#4da870;color:#0a4a2a;box-shadow:0 0 0 2px #7ecda0;}
+/* ▲ だいたい */
+.jbtn.j-half          {color:#666;}
+.jbtn.j-half.selected {background:#fff7d6;border-color:#d4a800;color:#6a4a00;box-shadow:0 0 0 2px #f0d060;}
+/* × 不正解 */
+.jbtn.j-bad           {color:#666;}
+.jbtn.j-bad.selected  {background:#fde8e0;border-color:#cc5533;color:#6b1a00;box-shadow:0 0 0 2px #e8a888;}
+
+/* ════ スコアバー（試験ヘッダー） ════ */
+.exam-score-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:0.6rem 1.4rem;
+  background:var(--accent-d);
+}
+.esb-chip{
+  font-size:0.78rem;padding:3px 12px;border-radius:12px;font-weight:600;
+  display:flex;align-items:center;gap:4px;
+}
+
+.esb-good    {background:rgba(100,220,150,0.2);color:#7de8a8;}
+.esb-half    {background:rgba(240,200,60,0.2); color:#f0d060;}
+.esb-bad     {background:rgba(220,100,80,0.2); color:#e89878;}
+.esb-none    {background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);}
+.esb-spacer  {flex:1;}
+.esb-total   {font-size:0.72rem;color:rgba(255,255,255,0.5);}
+
+/* ════ 結果 ════ */
+.result-donut{text-align:center;margin:1rem 0;}
+.result-donut svg{display:block;margin:0 auto;}
+.result-score-txt{font-size:2rem;font-weight:700;color:var(--accent);}
+@media(min-width:768px) and (orientation:landscape){
+  .result-score-txt{font-size:2.5rem;}
+  .result-chip .rc-num{font-size:1.6rem;}
+  .result-detail-item{font-size:0.95rem;padding:0.65rem 0;}
+  .rdi-name{font-size:1rem;}
+}
+.result-score-sub{font-size:0.82rem;color:var(--text-f);margin-bottom:4px;}
+.result-msg{text-align:center;font-size:0.92rem;color:var(--text-m);margin:0.75rem 0 1.25rem;}
+.result-chips{display:flex;gap:8px;justify-content:center;margin-bottom:1.25rem;}
+.result-chip{
+  flex:1;max-width:120px;padding:0.65rem 0.5rem;border-radius:10px;text-align:center;
+  border:1px solid var(--border);background:var(--surface2);
+}
+.result-chip .rc-num{font-size:1.4rem;font-weight:700;}
+.result-chip .rc-lbl{font-size:0.7rem;color:var(--text-f);}
+.result-chip.rg .rc-num{color:#0a4a2a;}
+.result-chip.rh .rc-num{color:#6a4a00;}
+.result-chip.rb .rc-num{color:#6b1a00;}
+.result-detail-list{margin-bottom:1.25rem;}
+.result-detail-item{
+  display:flex;align-items:center;gap:10px;
+  padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.85rem;
+}
+.result-detail-item:last-child{border-bottom:none;}
+.rdi-num{font-size:0.7rem;color:var(--text-f);width:22px;flex-shrink:0;text-align:right;}
+.rdi-name{flex:1;color:var(--text);}
+.rdi-cat{font-size:0.68rem;color:var(--text-f);}
+.rdi-badge{font-size:1rem;width:28px;text-align:center;flex-shrink:0;}
+.result-actions{display:flex;gap:8px;}
+.result-btn{
+  flex:1;padding:0.75rem;border-radius:10px;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.88rem;font-weight:500;
+  cursor:pointer;border:none;transition:opacity 0.15s;
+}
+.result-btn.primary{background:var(--accent);color:#fff;}
+.result-btn.secondary{background:var(--surface2);color:var(--text-m);border:1px solid var(--border-m);}
+.result-btn:hover{opacity:0.85;}
+
+@media(max-width:480px){
+  .exam-row{grid-template-columns:24px 1fr auto;gap:8px;padding:0.65rem 0.85rem;}
+  .exam-row-num{width:22px;height:22px;font-size:0.65rem;}
+  .exam-row-name{font-size:1rem;}
+  .jbtn{width:32px;height:32px;font-size:0.9rem;}
+}
+/* スマホ：試験グリッドを1列縦並びに */
+@media(max-width:767px){
+  .exam-grid{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+  .exam-card{
+    min-height:auto;
+    padding:0.75rem 1rem;
+    flex-direction:row;
+    align-items:center;
+    gap:10px;
+  }
+  .exam-card-top{
+    flex:1;
+    align-items:center;
+    gap:8px;
+  }
+  .exam-card-name{
+    font-size:1rem;
+    font-weight:700;
+    line-height:1.3;
+  }
+  .exam-card-bottom{
+    flex-shrink:0;
+    flex-wrap:nowrap;
+    gap:5px;
+  }
+  .exam-mini-chip{ display:none; }
+  .card-judge-group{
+    margin-left:0;
+    gap:5px;
+  }
+  .cjbtn{
+    width:36px;height:36px;font-size:1rem;border-radius:8px;
+  }
+}
+@media(min-width:768px) and (orientation:landscape){
+  /* ── モーダル全体：画面内に収める ── */
+  .modal{
+    max-width:88vw;
+    max-height:94vh;
+    overflow-y:hidden;   /* スクロールさせない */
+    display:flex;
+    flex-direction:column;
+  }
+  .modal-overlay{ align-items:center; padding:0.75rem 2rem; }
+  .modal-header{ padding:0.7rem 1.5rem; flex-shrink:0; }
+
+  /* スコアバー・タイマー */
+  .exam-score-bar{ padding:0.35rem 1.5rem; flex-shrink:0; }
+  .esb-chip{ font-size:0.8rem; padding:2px 12px; }
+  .timer-bar{ padding:0.35rem 1.5rem; flex-shrink:0; }
+  .timer-clock{ font-size:1.1rem; min-width:56px; }
+  .timer-expired-banner{ padding:0.3rem; font-size:0.8rem; flex-shrink:0; }
+
+  /* modal-body：残り高さをすべて使う */
+  .modal-body{
+    padding:0.6rem 1.5rem 0.6rem;
+    flex:1;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* 説明文：非表示（スペース節約） */
+  .exam-list-note{ display:none; }
+
+  /* リスト：flex-growで残りを埋める */
+  .exam-list{
+    gap:4px;
+    margin-bottom:0.5rem;
+    flex:1;
+    overflow-y:hidden;
+  }
+
+  /* 各行：コンパクト */
+  .exam-row{
+    grid-template-columns:30px 1fr auto;
+    grid-template-rows:auto auto;
+    padding:0.45rem 1rem;
+    gap:3px 12px;
+    border-radius:8px;
+    align-items:center;
+  }
+  .exam-row-num{
+    width:24px;height:24px;font-size:0.7rem;
+    grid-row:1/3;align-self:center;
+  }
+  .exam-row-name{
+    font-size:1.25rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    line-height:1.2;
+    grid-column:2;grid-row:1;
+  }
+  .judge-group{
+    gap:6px;
+    grid-column:3;grid-row:1/3;align-self:center;
+  }
+  .exam-reveal-row{
+    grid-column:2;grid-row:2;
+    margin-top:2px;gap:6px;
+  }
+
+  /* ○▲×ボタン */
+  .jbtn{
+    width:44px;height:44px;
+    font-size:1.25rem;
+    border-radius:9px;
+    border-width:2px;
+  }
+
+  /* revealチップ */
+  .reveal-chip{
+    font-size:0.75rem;padding:3px 9px;border-radius:6px;
+  }
+  .reveal-chip .rc-label{ font-size:0.58rem; }
+
+  /* 結果ボタン */
+  .setup-start-btn{ padding:0.6rem; font-size:0.88rem; margin-top:0.4rem; flex-shrink:0; }
+
+  /* 結果画面 */
+  .result-detail-item{ padding:0.45rem 0; }
+  .rdi-name{ font-size:0.95rem; }
+}
+
+/* iPad縦 */
+@media(min-width:768px) and (orientation:portrait){
+  .modal{ max-width:86vw; }
+  .exam-row-name{ font-size:1.25rem; font-weight:600; }
+  .jbtn{ width:46px;height:46px;font-size:1.25rem; }
+  .judge-group{ gap:8px; }
+}
+
+/* ════ タイマー ════ */
+.timer-setup-row {
+  display:flex;align-items:center;gap:10px;margin-bottom:0.4rem;
+}
+.timer-toggle {
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  font-size:0.88rem;color:var(--text-m);user-select:none;
+}
+.timer-toggle input[type=checkbox] {
+  width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;
+}
+.timer-inputs {
+  display:flex;align-items:center;gap:8px;
+  padding:0.6rem 0.75rem;
+  background:var(--surface2);border-radius:8px;border:1px solid var(--border);
+  transition:opacity 0.15s;
+}
+.timer-inputs.disabled { opacity:0.35;pointer-events:none; }
+.timer-inputs label { font-size:0.78rem;color:var(--text-m); }
+.timer-num-input {
+  width:52px;padding:4px 6px;text-align:center;
+  border:1px solid var(--border-m);border-radius:6px;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.95rem;font-weight:600;
+  color:var(--accent);background:#fff;outline:none;
+}
+.timer-num-input:focus { border-color:var(--accent); }
+
+/* タイマー表示バー（B案：ドーナツ＋大型数字） */
+.timer-bar {
+  display:none;
+  align-items:center;gap:14px;
+  background:var(--accent-d);padding:0.5rem 1.4rem;
+  flex-shrink:0;
+}
+.timer-bar.visible { display:flex; }
+
+.timer-donut {
+  position:relative;width:52px;height:52px;flex-shrink:0;
+}
+.timer-donut svg { display:block; }
+.timer-donut-track { fill:none;stroke:rgba(255,255,255,0.15);stroke-width:6; }
+.timer-donut-fill  {
+  fill:none;stroke:#4de890;stroke-width:6;
+  stroke-linecap:round;
+  transition:stroke-dasharray 1s linear,stroke 0.5s;
+  transform-origin:center;transform:rotate(-90deg);
+}
+.timer-donut-fill.warning { stroke:#f0d060; }
+.timer-donut-fill.danger  { stroke:#f07060; }
+
+.timer-clock {
+  font-size:2rem;font-weight:900;color:#fff;
+  font-variant-numeric:tabular-nums;letter-spacing:0.02em;
+  line-height:1;flex-shrink:0;
+}
+.timer-clock.warning { color:#f0d060;animation:timerPulse 1s ease infinite; }
+.timer-clock.danger  { color:#f07060;animation:timerPulse 0.5s ease infinite; }
+@keyframes timerPulse { 0%,100%{opacity:1;} 50%{opacity:0.45;} }
+
+.timer-sub {
+  font-size:0.7rem;color:rgba(255,255,255,0.45);
+  margin-top:3px;
+}
+.timer-pause-btn {
+  margin-left:auto;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+  color:#fff;border-radius:8px;padding:6px 14px;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.8rem;cursor:pointer;
+  transition:background 0.12s;flex-shrink:0;
+}
+.timer-pause-btn:hover { background:rgba(255,255,255,0.22); }
+
+/* 時間切れバナー */
+.timer-expired-banner {
+  display:none;
+  background:#c82000;color:#fff;
+  text-align:center;padding:0.45rem;
+  font-size:0.85rem;font-weight:700;letter-spacing:0.03em;
+}
+.timer-expired-banner.visible { display:block; }
+
+/* ════ 試験モード：陽性所見・鑑別疾患の開示 ════ */
+.exam-reveal-row {
+  display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;
+}
+.reveal-chip {
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:8px;
+  border:1.5px dashed var(--border-m);
+  background:var(--surface2);
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.78rem;font-weight:500;
+  cursor:pointer;transition:all 0.18s;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.reveal-chip .rc-label {
+  font-size:0.62rem;font-weight:700;letter-spacing:0.06em;
+  opacity:0.55;margin-right:2px;
+}
+.reveal-chip .rc-val {
+  color:var(--text-f);letter-spacing:0.01em;
+}
+.reveal-chip .rc-dots { color:var(--text-f);font-size:1rem;letter-spacing:0.1em; }
+.reveal-chip.revealed {
+  border-style:solid;border-color:var(--border-m);
+  background:#fff;cursor:default;
+}
+.reveal-chip.revealed .rc-val { color:var(--text); }
+.reveal-chip.positive-chip.revealed { border-color:#7ecaa0;background:#eaf5ef; }
+.reveal-chip.positive-chip.revealed .rc-label { color:var(--c-positive); }
+.reveal-chip.positive-chip.revealed .rc-val { color:var(--c-positive); }
+.reveal-chip.disease-chip.revealed  { border-color:#e09070;background:#fef2ec; }
+.reveal-chip.disease-chip.revealed  .rc-label { color:var(--c-disease); }
+.reveal-chip.disease-chip.revealed  .rc-val { color:var(--c-disease);font-weight:600; }
+
+/* iPad横：revealチップを大きく */
+@media(min-width:768px) and (orientation:landscape){
+  .reveal-chip { font-size:0.88rem;padding:6px 14px;border-radius:10px; }
+  .reveal-chip .rc-label { font-size:0.68rem; }
+  .exam-reveal-row { gap:10px;margin-top:8px; }
+}
+
+/* ════ 試験モード 詳細ポップアップ ════ */
+.exam-detail-overlay {
+  display:none;position:fixed;inset:0;z-index:2000;
+  background:rgba(10,20,50,0.6);
+  align-items:center;justify-content:center;padding:1.5rem;
+}
+.exam-detail-overlay.visible { display:flex; }
+.exam-detail-modal {
+  background:#fff;border-radius:16px;
+  width:100%;max-width:520px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  animation:modalIn 0.2s ease;overflow:hidden;
+}
+.edm-header {
+  background:var(--accent);color:#fff;
+  padding:0.9rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.edm-num {
+  font-size:0.72rem;font-weight:700;
+  background:rgba(255,255,255,0.2);
+  padding:2px 8px;border-radius:10px;flex-shrink:0;
+}
+.edm-name {
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.05rem;font-weight:600;flex:1;line-height:1.35;
+}
+.edm-close {
+  background:rgba(255,255,255,0.15);border:none;color:#fff;
+  width:28px;height:28px;border-radius:6px;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.edm-body { padding:1rem 1.25rem 1.25rem; }
+.edm-block {
+  border-radius:8px;padding:0.75rem 0.9rem;margin-bottom:8px;
+  border:1px solid transparent;
+}
+.edm-block.positive { background:var(--bg-positive);border-color:#b8dfc6; }
+.edm-block.disease  { background:var(--bg-disease); border-color:#f0c8b0; }
+.edm-block-lbl {
+  display:inline-flex;align-items:center;
+  font-size:0.68rem;font-weight:600;letter-spacing:0.06em;
+  padding:1px 8px;border-radius:8px;margin-bottom:5px;cursor:pointer;
+}
+.edm-block.positive .edm-block-lbl { background:#a8d8ba;color:#063020; }
+.edm-block.disease  .edm-block-lbl { background:#e8b898;color:#4a1000; }
+.edm-reveal-btn {
+  width:100%;padding:7px;
+  border:1.5px dashed var(--border-m);border-radius:7px;
+  background:var(--surface2);
+  font-family:'Noto Sans JP',sans-serif;font-size:0.85rem;
+  color:var(--text-f);cursor:pointer;transition:all 0.15s;
+}
+.edm-reveal-btn:hover { background:#fff;color:var(--text); }
+.edm-val {
+  font-size:0.9rem;line-height:1.75;
+  display:none;margin-top:5px;
+}
+.edm-block.positive .edm-val { color:var(--c-positive);font-weight:500; }
+.edm-block.disease  .edm-val { color:var(--c-disease); font-weight:600; }
+.edm-val.visible { display:block;animation:fadeIn 0.18s ease; }
+/* 自己評価エリア */
+.edm-judge {
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-top:1rem;padding-top:0.9rem;
+  border-top:1px solid var(--border);
+}
+.edm-judge-lbl { font-size:0.8rem;color:var(--text-f); }
+.edm-jbtn {
+  width:52px;height:52px;border-radius:10px;
+  border:2px solid var(--border-m);background:var(--surface2);
+  font-size:1.4rem;cursor:pointer;transition:all 0.12s;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.edm-jbtn:hover { filter:brightness(0.92); }
+.edm-jbtn.j-good.selected  { background:#d6f0e2;border-color:#4da870;color:#0a4a2a;box-shadow:0 0 0 2px #7ecda0; }
+.edm-jbtn.j-half.selected  { background:#fff7d6;border-color:#d4a800;color:#6a4a00;box-shadow:0 0 0 2px #f0d060; }
+.edm-jbtn.j-bad.selected   { background:#fde8e0;border-color:#cc5533;color:#6b1a00;box-shadow:0 0 0 2px #e8a888; }
+.edm-nav {
+  display:flex;gap:8px;margin-top:0.75rem;
+}
+.edm-nav-btn {
+  flex:1;padding:0.6rem;border-radius:8px;
+  border:1px solid var(--border-m);background:var(--surface2);
+  font-family:'Noto Sans JP',sans-serif;font-size:0.85rem;color:var(--text-m);
+  cursor:pointer;transition:all 0.12s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.edm-nav-btn:hover { background:var(--accent-l);color:var(--accent); }
+.edm-nav-btn svg { width:14px;height:14px; }
+
+/* ════ 試験グリッド（2列） ════ */
+.exam-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:0.75rem;
+}
+.exam-card {
+  background:#fff;
+  border:2px solid var(--border);
+  border-radius:14px;
+  padding:0.8rem 0.9rem;
+  cursor:pointer;
+  transition:all 0.15s;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  -webkit-tap-highlight-color:transparent;
+  min-height:90px;
+}
+.exam-card:hover { border-color:var(--accent-mid); box-shadow:0 3px 12px rgba(0,0,0,0.1); }
+.exam-card.judged-good { border-color:#4da870; background:#f0faf4; }
+.exam-card.judged-half { border-color:#d4a800; background:#fffbeb; }
+.exam-card.judged-bad  { border-color:#cc5533; background:#fff5f2; }
+
+/* 上段：番号 + 検査名 */
+.exam-card-top {
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  flex:1;
+}
+.exam-card-num {
+  font-size:0.65rem;font-weight:700;color:#fff;
+  background:var(--accent);border-radius:50%;
+  width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:3px;
+}
+.exam-card-name {
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.2rem;
+  font-weight:900;
+  color:var(--accent);
+  line-height:1.3;
+  flex:1;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+  letter-spacing:0.01em;
+}
+
+/* 下段：○▲× + ミニチップ */
+.exam-card-bottom {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.exam-mini-chip {
+  font-size:0.62rem;padding:2px 7px;border-radius:5px;
+  border:1px dashed var(--border-m);color:var(--text-f);
+  background:var(--surface2);
+}
+.exam-mini-chip.revealed-pos { background:#d6f0e2;border-color:#7ecaa0;color:#0a4a2a;border-style:solid; }
+.exam-mini-chip.revealed-dis { background:#fde8e0;border-color:#e09070;color:#6b1a00;border-style:solid; }
+
+/* 自己評価ボタン（カード内） */
+.card-judge-group {
+  display:flex;
+  gap:4px;
+  flex-shrink:0;
+  margin-left:auto;
+}
+.cjbtn {
+  width:34px;height:34px;border-radius:8px;
+  border:1.5px solid var(--border-m);
+  background:var(--surface2);
+  font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.12s;
+  -webkit-tap-highlight-color:transparent;
+}
+.cjbtn:hover { filter:brightness(0.92); }
+.cjbtn.j-good.selected { background:#d6f0e2;border-color:#4da870;color:#0a4a2a;box-shadow:0 0 0 2px #7ecda0; }
+.cjbtn.j-half.selected { background:#fff7d6;border-color:#d4a800;color:#6a4a00;box-shadow:0 0 0 2px #f0d060; }
+.cjbtn.j-bad.selected  { background:#fde8e0;border-color:#cc5533;color:#6b1a00;box-shadow:0 0 0 2px #e8a888; }
+
+
+/* iPad横 2列グリッド専用 */
+@media(min-width:768px) and (orientation:landscape){
+  .exam-grid { gap:12px; margin-bottom:0.6rem; }
+  .exam-card {
+    padding:1rem 1.2rem;
+    border-radius:16px;
+    min-height:100px;
+    gap:10px;
+  }
+  .exam-card-name {
+    font-size:1.65rem;
+    line-height:1.25;
+    letter-spacing:0.01em;
+    font-weight:900;
+  }
+  .exam-card-num  { width:24px;height:24px;font-size:0.7rem;margin-top:4px; }
+  .exam-mini-chip { font-size:0.7rem;padding:3px 9px; }
+  .cjbtn { width:40px;height:40px;font-size:1.15rem;border-radius:9px; }
+  .card-judge-group { gap:6px; }
+  /* 詳細モーダル */
+  .exam-detail-modal { max-width:600px; }
+  .edm-name { font-size:1.2rem; }
+  .edm-val  { font-size:0.95rem;line-height:1.8; }
+  .edm-jbtn { width:58px;height:58px;font-size:1.5rem; }
+}
+
+/* ════ プロジェクターモード ════ */
+.proj-toggle-btn {
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.12);color:#fff;
+  font-family:'Noto Sans JP',sans-serif;font-size:0.78rem;
+  cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;
+}
+.proj-toggle-btn svg { width:14px;height:14px; }
+.proj-toggle-btn.active {
+  background:rgba(255,220,60,0.3);
+  border-color:rgba(255,220,60,0.7);
+  color:#ffe040;
+}
+
+/* プロジェクターモード時のモーダル全体 */
+body.proj-mode .modal {
+  background:#111 !important;
+  max-width:96vw !important;
+  max-height:96vh !important;
+}
+body.proj-mode .modal-header {
+  background:#000 !important;
+  border-bottom:2px solid #333;
+  padding:0.6rem 1.25rem;
+}
+body.proj-mode .modal-header h2 { color:#fff;font-size:0.9rem; }
+body.proj-mode .exam-score-bar {
+  background:#000;
+  padding:0.35rem 1.25rem;
+  border-bottom:1px solid #333;
+}
+body.proj-mode .esb-chip { font-size:0.85rem; }
+body.proj-mode .esb-good { background:rgba(80,200,100,0.25);color:#60e880; }
+body.proj-mode .esb-half { background:rgba(240,200,60,0.25);color:#f0d060; }
+body.proj-mode .esb-bad  { background:rgba(220,80,60,0.25); color:#f07060; }
+body.proj-mode .esb-none { background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4); }
+body.proj-mode .esb-total{ color:rgba(255,255,255,0.4); }
+body.proj-mode .timer-bar { background:#000;border-bottom:1px solid #333; }
+body.proj-mode .timer-clock { color:#fff; }
+body.proj-mode .modal-body { background:#111;padding:0.6rem 1rem 0.8rem; }
+
+/* カード */
+body.proj-mode .exam-grid { gap:10px; }
+body.proj-mode .exam-card {
+  background:#1e1e1e;
+  border:2px solid #333;
+  border-radius:14px;
+  min-height:80px;
+}
+body.proj-mode .exam-card:hover { border-color:#555; }
+body.proj-mode .exam-card.judged-good { border-color:#4da870;background:#0d2a18; }
+body.proj-mode .exam-card.judged-half { border-color:#d4a800;background:#2a2000; }
+body.proj-mode .exam-card.judged-bad  { border-color:#cc5533;background:#2a100a; }
+
+body.proj-mode .exam-card-num {
+  background:#444;color:#ccc;
+}
+body.proj-mode .exam-card-name {
+  color:#fff !important;
+  font-size:1.45rem !important;
+  font-weight:900 !important;
+  text-shadow:0 2px 8px rgba(0,0,0,0.5);
+  letter-spacing:0.02em;
+}
+
+/* 自己評価ボタンを隠す */
+body.proj-mode .card-judge-group { display:none !important; }
+
+/* ミニチップも隠す */
+body.proj-mode .exam-mini-chip { display:none !important; }
+
+/* 結果ボタン */
+body.proj-mode .setup-start-btn {
+  background:#2255cc;margin-top:0.4rem;padding:0.6rem;font-size:0.88rem;
+}
+
+/* iPad横プロジェクターモード */
+@media(min-width:768px) and (orientation:landscape){
+  body.proj-mode .exam-card-name {
+    font-size:2rem !important;
+    line-height:1.2;
+    font-weight:900 !important;
+    letter-spacing:0.02em;
+  }
+  body.proj-mode .exam-card {
+    min-height:90px;
+    padding:0.9rem 1.1rem;
+  }
+  body.proj-mode .exam-grid { gap:12px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menu-btn" id="menu-btn" aria-label="メニュー" onclick="toggleSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <div class="header-logo">
+    <span class="logo-main">整形外科的</span><span class="logo-accent">テストナビ</span>
+    
+  </div>
+
+  <!-- 検索：虫眼鏡ボタン + 展開インプット -->
+  <div class="search-wrap">
+    <input type="search" id="search" placeholder="検索…" autocomplete="off">
+    <button class="search-toggle" id="search-toggle" onclick="toggleSearch()" aria-label="検索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="header-right">
+    <span class="total-badge" id="total-badge"></span>
+    <button id="hl-mode-btn" onclick="toggleHlMode()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+      </svg>
+      マーキング
+    </button>
+  </div>
+</header>
+
+<div class="subheader">
+  <span class="subheader-creator">問い合わせ先：専門学校沖縄統合医療学院　鍼灸学科基幹教員　三橋　光輝</span>
+</div>
+
+<!-- 色選択ポップオーバー -->
+<div id="hl-popover">
+  <div class="hl-pop-title">マーキング色を選択</div>
+  <div class="hl-colors-row">
+    <button class="hl-color-btn c-yellow" data-color="yellow" onclick="applyFromPopover('yellow')" title="黄"></button>
+    <button class="hl-color-btn c-green"  data-color="green"  onclick="applyFromPopover('green')"  title="緑"></button>
+    <button class="hl-color-btn c-pink"   data-color="pink"   onclick="applyFromPopover('pink')"   title="ピンク"></button>
+    <button class="hl-color-btn c-blue"   data-color="blue"   onclick="applyFromPopover('blue')"   title="水色"></button>
+  </div>
+  <div class="hl-pop-actions">
+    <button class="hl-pop-btn danger" id="hl-remove-btn" onclick="removeFromPopover()" style="display:none">削除</button>
+    <button class="hl-pop-btn" onclick="closePopover()">キャンセル</button>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+
+<!-- 試験モードモーダル -->
+<div class="modal-overlay" id="exam-modal">
+  <div class="modal" id="exam-modal-inner"></div>
+</div>
+<!-- 試験詳細ポップアップ -->
+<div class="exam-detail-overlay" id="exam-detail-overlay">
+  <div class="exam-detail-modal" id="exam-detail-modal">
+    <div class="edm-header">
+      <span class="edm-num" id="edm-num"></span>
+      <span class="edm-name" id="edm-name"></span>
+      <button class="edm-close" onclick="closeExamDetail()">✕</button>
+    </div>
+    <div class="edm-body">
+      <div class="edm-block positive" id="edm-positive-block">
+        <div class="edm-block-lbl">陽性所見</div>
+        <button class="edm-reveal-btn" id="edm-positive-btn" onclick="revealDetail('positive')">▼ タップして確認</button>
+        <div class="edm-val" id="edm-positive-val"></div>
+      </div>
+      <div class="edm-block disease" id="edm-disease-block">
+        <div class="edm-block-lbl">鑑別疾患</div>
+        <button class="edm-reveal-btn" id="edm-disease-btn" onclick="revealDetail('disease')">▼ タップして確認</button>
+        <div class="edm-val" id="edm-disease-val"></div>
+      </div>
+      <div class="edm-judge">
+        <span class="edm-judge-lbl">自己評価</span>
+        <button class="edm-jbtn j-good" id="edm-j-good" onclick="setJudgeFromDetail('good')">○</button>
+        <button class="edm-jbtn j-half" id="edm-j-half" onclick="setJudgeFromDetail('half')">▲</button>
+        <button class="edm-jbtn j-bad"  id="edm-j-bad"  onclick="setJudgeFromDetail('bad')">×</button>
+      </div>
+      <div class="edm-nav">
+        <button class="edm-nav-btn" onclick="navDetail(-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>前
+        </button>
+        <button class="edm-nav-btn" onclick="closeExamDetail()">一覧に戻る</button>
+        <button class="edm-nav-btn" onclick="navDetail(1)">
+          次<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-section-lbl">カテゴリ</div>
+      <div id="sidebar-cats"></div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-divider"></div>
+      <button class="sidebar-expand-btn" id="expand-all-btn" onclick="toggleAll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <span id="expand-label">すべて開く</span>
+      </button>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-exam-wrap">
+        <span class="sidebar-exam-label">✦ practice mode ✦</span>
+        <button class="sidebar-exam-btn" onclick="openExamSetup()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <path d="M9 12h6M9 16h4"/>
+          </svg>
+          <span>試験モード<span class="sidebar-exam-btn-sub">ランダム出題・自己評価</span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main class="content" id="main"></main>
+</div>
+
+<script>
+const ALL = [{"category": "腱反射", "name": "上腕二頭筋腱反射", "method": "①患者の上肢をリラックスさせ、肘関節屈曲位で保持\n②上腕二頭筋腱を同定し、母指で押さえる\n③母指の上を正しく叩打する", "positive": "", "purpose": "", "disease": ""}, {"category": "腱反射", "name": "上腕三頭筋腱反射", "method": "①患者の上肢をリラックスさせ、肩関節伸展・肘関節屈曲位で上腕部を保持\n②肘頭のやや中枢側で上腕三頭筋腱を同定\n③肘頭のやや中枢側を直接叩打する", "positive": "", "purpose": "", "disease": ""}, {"category": "腱反射", "name": "腕橈骨筋腱反射", "method": "①患者の上肢をリラックスさせ、肘関節屈曲・前腕回内回外中間位（軽度回内位）で保持\n②橈骨茎状突起のやや中枢側で腕橈骨筋腱を同定\n③腕橈骨筋腱のやや中枢側を直接叩打する。もしくは腱を母指で触れその上を叩打する。", "positive": "", "purpose": "", "disease": ""}, {"category": "腱反射", "name": "膝蓋腱反射", "method": "①座位、膝蓋腱を確認し、その部分をハンマーで叩打する。", "positive": "", "purpose": "", "disease": ""}, {"category": "腱反射", "name": "アキレス腱反射", "method": "①座位、足関節を持ち、背屈させ、アキレス腱をハンマーで叩打する。", "positive": "", "purpose": "", "disease": ""}, {"category": "頸", "name": "ジャクソンテスト", "method": "患者の後方に立ち、患者へ頸椎を後屈するように指示する。\n検者は両手を患者の頭部に置き、ゆっくりと垂直方向に圧迫を加える。", "positive": "患側の頸部および上肢に放散痛が誘発、または疼痛が増強する。", "purpose": "圧迫刺激により椎間孔の狭窄が強まり、神経根の圧迫症状が出現する。", "disease": "頸椎症性神経根症、頸部椎間板ヘルニアなど"}, {"category": "頸", "name": "スパーリングテスト", "method": "患者の後方に立ち、患者へ頸椎を患側へ側屈・後屈するように指示する。検者は両手を患者の頭部に置き、ゆっくりと垂直方向に圧迫を加える。", "positive": "患側の頸部および上肢に放散痛が誘発、または疼痛が増強する。", "purpose": "圧迫刺激により椎間孔の狭窄が強まり、神経根の圧迫症状が出現する。", "disease": "頸椎症性神経根症、頸部椎間板ヘルニアなど"}, {"category": "頸", "name": "イートンテスト", "method": "患者の後方に立ち、一方の手を患者の側頭部に置いて頸部を反対側へ側屈させる。\n他方の手で患者の患側手掌を持ち、肩関節伸展・外旋位、肘関節伸展位、手関節背屈位、手指伸展位に誘導する。", "positive": "患側の頸部および上肢に放散痛が誘発、または疼痛が増強する。", "purpose": "神経根部に牽引ストレスをかけることにより症状が出現する。", "disease": "頸椎症性神経根症、頸部椎間板ヘルニアなど"}, {"category": "胸郭出口症候群", "name": "モーレーテスト", "method": "患者の後方または側方に立ち、鎖骨上窩部（斜角筋三角）に手指を当て、両側を軽く圧迫する。", "positive": "患側上肢のしびれ、肩関節周囲、前胸部への放散痛が誘発される。", "purpose": "斜角筋部の圧迫により斜角筋間隙が狭まり、腕神経叢などが圧迫されて症状が出現する。", "disease": "胸郭出口症候群（斜角筋症候群）"}, {"category": "胸郭出口症候群", "name": "アレンテスト", "method": "患者の後方に立ち、患側上肢を下垂した状態で橈骨動脈の拍動を確認する。\n次に肩関節90°外転・外旋位、肘関節90°屈曲位にし、橈骨動脈の拍動を確認する。\nその後、頸部を患側へ回旋するよう指示する。", "positive": "橈骨動脈の拍動が減弱または消失する。", "purpose": "斜角筋間隙部が狭まり、鎖骨下動脈および腕神経叢が圧迫されて症状が出現する。", "disease": "胸郭出口症候群（斜角筋症候群）"}, {"category": "胸郭出口症候群", "name": "アドソンテスト", "method": "患者の正面または側方に立ち、両手を膝の上に置くよう指示する。\n橈骨動脈の拍動を確認しながら、頸部を後屈させ、患側へ回旋するよう指示する。\nその肢位のまま深呼吸をして呼吸を止めるよう指示する。", "positive": "橈骨動脈の拍動が減弱または消失する。", "purpose": "斜角筋間隙部が狭まり、鎖骨下動脈および腕神経叢が圧迫されて症状が出現する。", "disease": "胸郭出口症候群（斜角筋症候群）"}, {"category": "胸郭出口症候群", "name": "エデンテスト", "method": "患者の後方に立ち、患者の両上肢の橈骨動脈の拍動を確認する。\n胸を張るように指示し、両上肢を後方に引き下げる。", "positive": "橈骨動脈の拍動が減弱または消失する。", "purpose": "肋鎖間隙が狭まり、鎖骨下動脈および腕神経叢が圧迫されて症状が出現する。", "disease": "胸郭出口症候群（肋鎖症候群）"}, {"category": "胸郭出口症候群", "name": "ライトテスト", "method": "患者の後方に立ち、両上肢の橈骨動脈の拍動を確認する。\n両上肢を肩関節90°外転・外旋位、肘関節90°屈曲位にし、そこから肩を過外転させる。", "positive": "橈骨動脈の拍動が減弱または消失する。", "purpose": "第1肋骨と鎖骨の間隙、および烏口突起下で小胸筋と胸壁の間が狭まり、\n鎖骨下動脈および腕神経叢が圧迫されて症状が出現する", "disease": "胸郭出口症候群（過外転症候群）"}, {"category": "胸郭出口症候群", "name": "ルーステスト", "method": "両肩関節90°外転・外旋位、肘関節90°屈曲位の肢位をとらせ、手指の屈伸運動を\n3分間継続するように指示する。", "positive": "患側上肢の疲労感、冷感、疼痛、手掌血色の変化などが誘発され、運動が継続できない。", "purpose": "肋鎖間隙の狭小により、鎖骨下動静脈や腕神経叢が圧迫される状況を再現する。", "disease": "胸郭出口症候群"}, {"category": "肩", "name": "ヤーガソンテスト", "method": "患者の側方に立ち、上肢を肘関節90°屈曲、前腕回内位で体側に固定する。\n手関節を持ち、検者は前腕回内方向へ抵抗を加えながら、患者に前腕回外運動を指示する", "positive": "肩関節前面（結節間溝部）に疼痛が出現する。", "purpose": "前腕を回外させ上腕二頭筋を収縮させることにより、上腕二頭筋長頭腱に刺激が加わる。", "disease": "上腕二頭筋長頭腱炎"}, {"category": "肩", "name": "スピードテスト", "method": "患者の側方に立ち、肘関節伸展、前腕回外位を指示する。\n検者は前腕部に抵抗を加えながら、患者へ肩関節の前方挙上を指示する。", "positive": "肩関節前面（結節間溝部）に疼痛が出現する。", "purpose": "抵抗負荷により上腕二頭筋腱に刺激が加わる。", "disease": "上腕二頭筋長頭腱炎"}, {"category": "肩", "name": "ストレッチテスト", "method": "患者の後方に立ち、肘を伸展させた状態で肩関節を伸展させる。\nその後、肩関節は伸展させたまま肘関節を屈曲させる。", "positive": "肘関節を伸展させた状態で肩関節を伸展させると肩関節前面（結節間溝部）に疼痛が出現、\n肘関節を屈曲させることで疼痛が減弱もしくは消失する。", "purpose": "肘関節伸展・肩関節伸展位により上腕二頭筋長頭腱に伸張ストレスが加わり、肘関節屈曲によりそのストレスが緩和される", "disease": "上腕二頭筋長頭腱炎"}, {"category": "肩", "name": "ダウバーン徴候", "method": "患者の側方に立ち、上肢下垂位で肩峰下部の圧痛を確認する。\n圧痛があれば、そのまま上肢を90°外転させる。", "positive": "上肢90°外転で疼痛が消失する。", "purpose": "肩関節の外転により、肩峰下滑液包と大結節部が肩峰の下に滑り込み、圧迫が消失する。", "disease": "肩峰下滑液包炎"}, {"category": "肩", "name": "ペインフルアークテスト", "method": "患者の側方に立ち、上肢下垂位から他動的に外転させていく。", "positive": "肩関節外転60°～120°の範囲で肩関節外側に疼痛が出現する。", "purpose": "肩関節外転60°～120°の範囲で上腕骨大結節と肩峰が接触することで疼痛が出現する。", "disease": "腱板炎、腱板損傷"}, {"category": "肩", "name": "ドロップアームテスト", "method": "患者の側方に立ち、肩関節を他動的に90°以上外転させた状態で手を離す。\nその位置からゆっくり肩関節を内転するよう指示する。", "positive": "ゆっくりと肩関節を内転することができず、上肢が落下する。", "purpose": "ゆっくりと肩関節を内転することができず、上肢が落下する。", "disease": "腱板断裂"}, {"category": "肩", "name": "ニアーテスト", "method": "患者の側方に立ち、肩甲骨を固定する。肩関節を内旋させながら、他動的にゆっくり屈曲させていく。", "positive": "肩関節屈曲時に疼痛が出現する。", "purpose": "最大屈曲位まで挙上することで、上腕骨大結節と靭帯の間で腱板を圧迫する。", "disease": "インピンジメント症候群、腱板炎、腱板損傷、腱板断裂など"}, {"category": "肩", "name": "リフトオフテスト", "method": "患者の後方に立ち、手背を腰背部の脊柱に当てるよう指示する。\nその状態から手背を背部から離すように指示する。", "positive": "手の甲を背中から離すことができない。", "purpose": "肩甲下筋の損傷または筋力低下により内旋動作が不良となる。", "disease": "腱板損傷（肩甲下筋の損傷・筋力低下）"}, {"category": "肩", "name": "アプリヘンジョンテスト", "method": "患者の後方に立ち、肩関節90°外転・外旋位に誘導した状態で、上腕骨頭を後方から押す。", "positive": "肩関節の痛みや不安定感が出現する。", "purpose": "後方から押すことにより脱臼肢位を誘発させる。", "disease": "習慣性肩関節脱臼"}, {"category": "肘", "name": "トムゼンテスト", "method": "患者の前方に立ち、肘関節伸展、前腕回内位で握りこぶしを作らせる。\nその状態から手関節背屈を指示し、検者はそれに抵抗を加える。", "positive": "上腕骨外側上顆に疼痛が誘発される。", "purpose": "前腕伸筋群を収縮させることにより、上腕骨外側上顆に対してストレスをかける。", "disease": "上腕骨外側上顆炎"}, {"category": "肘", "name": "チェアテスト", "method": "患者へ肘関節伸展、前腕回内位で椅子を持ち上げるように指示する。", "positive": "上腕骨外側上顆に疼痛が誘発される。", "purpose": "前腕伸筋群を収縮させることにより、上腕骨外側上顆に対してストレスをかける。", "disease": "上腕骨外側上顆炎"}, {"category": "肘", "name": "中指伸展テスト", "method": "患者の前方に立ち、肘関節伸展、前腕回内、中指伸展位を指示し、検者はそれに抵抗を加える。", "positive": "上腕骨外側上顆に疼痛が誘発される。", "purpose": "前腕伸筋群を収縮させることにより、上腕骨外側上顆に対してストレスをかける。", "disease": "上腕骨外側上顆炎"}, {"category": "肘", "name": "逆トムゼンテスト", "method": "患者の前方に立ち、肘関節伸展、前腕回内位で握りこぶしを作らせる。\nその状態から手関節掌屈を指示し、検者はそれに抵抗を加える。", "positive": "上腕骨内側上顆に疼痛が誘発される。", "purpose": "前腕屈筋群を収縮させることにより、上腕骨内側上顆に対してストレスをかける。", "disease": "上腕骨内側上顆炎"}, {"category": "手", "name": "アイヒホッフテスト", "method": "患者へ母指を掌に握り込み、手関節を尺屈するよう指示する。", "positive": "橈骨茎状突起付近に疼痛が誘発される。", "purpose": "短母指伸筋、長母指外転筋にストレスをかける。", "disease": "狭窄性腱鞘炎（ド・ケルバン病）"}, {"category": "手", "name": "フィンケルシュタインテスト", "method": "患者の前方に立ち、患者の母指を他動的に内転する。", "positive": "橈骨茎状突起付近に疼痛が誘発される。", "purpose": "短母指伸筋、長母指外転筋にストレスをかける。", "disease": "狭窄性腱鞘炎（ド・ケルバン病）"}, {"category": "手", "name": "ファーレンテスト", "method": "両手関節を90°掌屈させ、両手背面をつけた状態で約60秒間保持する。", "positive": "異常感覚や疼痛が橈側指（正中神経の支配領域）に放散する。", "purpose": "手関節掌屈を保持することにより手根管に対してストレスをかける。", "disease": "手根管症候群"}, {"category": "手", "name": "ティネル徴候", "method": "打腱器または手指を用いて神経損傷部位を叩打する。", "positive": "叩打すると支配領域にチクチク感や蟻走感（ぎそうかん）が生じる。", "purpose": "神経修復の際に髄鞘より先に軸索が再生されるため、むき出しの軸索が叩打によって刺激を受ける", "disease": "末梢神経障害（手根管症候群、ギヨン管症候群、肘部管症候群、足根管症候群など）"}, {"category": "手", "name": "フローマン徴候", "method": "患者に両側の母指と示指橈側面で紙を挟みこませ、引っ張らせる。", "positive": "長母指屈筋が作用し、母指の指節間関節（IP）が屈曲する。", "purpose": "尺骨神経支配の母指内転筋を作用させることが出来るか確認する。", "disease": "尺骨神経麻痺"}, {"category": "腰", "name": "下肢伸展挙上テスト（SLR）", "method": "患者を仰臥位に寝かせ患側下肢の膝関節伸展位のまま股関節を屈曲させていく。", "positive": "股関節屈曲70°以下で下肢に疼痛やしびれ感が出現する。\n※ハムストリングの伸張痛は陽性所見として捉えない。", "purpose": "下肢を伸展挙上することにより坐骨神経を構成する神経根部に伸展刺激が加わる。", "disease": "根性坐骨神経痛（下部腰椎椎間板ヘルニアなど）"}, {"category": "腰", "name": "ガワーズ・ブラガード徴候", "method": "SLRで疼痛が誘発された角度から少し挙上を緩め、足底先端に当てた手で足関節の背屈を強要する。\n※SLRテストから継続して実施する、SLRの増強法として用いられる。", "positive": "下肢の痛み、しびれ感が増強する。", "purpose": "坐骨神経を伸展させることにより症状が増強する。", "disease": "根性坐骨神経痛（下部腰椎椎間板ヘルニアなど）"}, {"category": "腰", "name": "大腿神経伸展テスト（FNS）", "method": "患者を伏臥位で寝かせ、患側の膝関節を深屈曲させる。", "positive": "大腿前面に疼痛やしびれ感が出現する。", "purpose": "股関節を伸展することにより、大腿神経に伸展ストレスが加わる。", "disease": "大腿神経痛（上部腰椎椎間板ヘルニアなど）"}, {"category": "腰", "name": "ケンプテスト", "method": "患者の後方に立ち、片手を患者の腰部に、他方の手を反対側の方にあてて、体幹を患側に後側屈する。", "positive": "患側下肢に疼痛やしびれ感が出現する。\n※局所痛がみられる場合は椎間関節病変が考えられる。", "purpose": "圧迫刺激により椎間孔の狭窄が強まるため、神経根の圧迫症状が出現する。", "disease": "脊柱管狭窄症、椎間関節性腰痛など"}, {"category": "腰", "name": "ニュートンテスト", "method": "患者を伏臥位で寝かせ、仙骨部を上からゆっくり圧迫する。", "positive": "仙腸関節部に疼痛が出現する。", "purpose": "仙骨部を圧迫することにより、仙腸関節部にストレスが加わる。", "disease": "仙腸関節疾患"}, {"category": "腰", "name": "ゲンスレンテスト", "method": "患者を仰臥位で寝かせ、健側の膝を抱え込んでもらいながら、患側の足をベッド下に降ろさせる。\nそのまま患側の大腿を押し下げるように伸展させる。", "positive": "仙腸関節部に疼痛が出現する。", "purpose": "腸骨に前方回旋ストレスをかけることで疼痛が誘発される。", "disease": "仙腸関節疾患"}, {"category": "股", "name": "トーマステスト", "method": "患者を仰臥位で寝かせ、健側の膝が胸壁に触れるくらいまで股関節と膝関節を屈曲させる。", "positive": "患側の股関節が屈曲し、膝関節が持ち上がる。", "purpose": "股関節を屈曲することにより骨盤が後傾し、反対側の股関節伸展が強制される。", "disease": "股関節屈曲拘縮（腸腰筋の拘縮など）"}, {"category": "股", "name": "エリー徴候", "method": "患者を伏臥位で寝かせ、片手で骨盤を押さえながら片側の膝関節を他動的に屈曲させる、", "positive": "臀部が浮き上がる「尻上がり現象」がみられる。", "purpose": "大腿直筋の緊張・短縮により同側股関節屈曲がみられる。", "disease": "大腿直筋の緊張・短縮"}, {"category": "股", "name": "パトリックテスト", "method": "患者を仰臥位で寝かせ、患側下肢を股関節屈曲・外転・外旋し、健側膝の上にのせる。\nそのまま患側の膝をベッド方向へ押し下げる。", "positive": "股関節部に疼痛が出現する。", "purpose": "股関節に対してストレスをかける。", "disease": "股関節疾患"}];
+const CATS = [...new Set(ALL.map(t => t.category))];
+let activeCategories = new Set();
+let searchQuery = '';
+let allExpanded = false;
+let sidebarOpen = false;
+let searchOpen  = false;
+
+/* ── 検索トグル ── */
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  const inp = document.getElementById('search');
+  inp.classList.toggle('open', searchOpen);
+  if (searchOpen) { inp.focus(); }
+  else { inp.value = ''; searchQuery = ''; render(); }
+}
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  if (searchQuery) { activeCategories.clear(); updateSidebarActive('__all__'); }
+  render();
+});
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key === 'Escape') toggleSearch();
+});
+
+/* ── サイドバー ── */
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  document.getElementById('sidebar-overlay').classList.toggle('open', sidebarOpen);
+}
+(function buildSidebar() {
+  const c = document.getElementById('sidebar-cats');
+  const ab = document.createElement('button');
+  ab.className='sidebar-btn active'; ab.dataset.cat='__all__';
+  ab.innerHTML='<span>すべて</span><span class="sidebar-count">'+ALL.length+'</span>';
+  ab.onclick=()=>{activeCategories.clear();updateSidebarActive('__all__');render();if(sidebarOpen)toggleSidebar();};
+  c.appendChild(ab);
+  CATS.forEach(cat=>{
+    const cnt=ALL.filter(t=>t.category===cat).length;
+    const b=document.createElement('button');
+    b.className='sidebar-btn';b.dataset.cat=cat;
+    b.innerHTML='<span>'+cat+'</span><span class="sidebar-count">'+cnt+'</span>';
+    b.onclick=()=>{
+      if(activeCategories.has(cat)&&activeCategories.size===1){activeCategories.clear();updateSidebarActive('__all__');}
+      else{activeCategories.clear();activeCategories.add(cat);updateSidebarActive(cat);
+        const a=document.getElementById('anchor-'+cat);
+        if(a) setTimeout(()=>a.scrollIntoView({behavior:'smooth',block:'start'}),60);}
+      render();if(sidebarOpen)toggleSidebar();
+    };
+    c.appendChild(b);
+  });
+})();
+function updateSidebarActive(cat){
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
+}
+function toggleAll(){
+  allExpanded=!allExpanded;
+  document.querySelectorAll('.test-item').forEach(el=>el.classList.toggle('open',allExpanded));
+  document.getElementById('expand-label').textContent=allExpanded?'すべて閉じる':'すべて開く';
+  document.getElementById('expand-all-btn').classList.toggle('expanded',allExpanded);
+}
+function toggleItem(el){el.classList.toggle('open');}
+
+/* ── ユーティリティ ── */
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function hlText(text,q){
+  const e=escHtml(text);
+  if(!q) return e;
+  return e.replace(new RegExp('('+escRe(escHtml(q))+')', 'gi'),'<mark>$1</mark>');
+}
+function fmtText(text,q){
+  return hlText(text,q)
+    .replace(/([①②③④⑤⑥⑦⑧⑨⑩※])/g,'<br>$1')
+    .replace(/^<br>/,'');
+}
+
+/* ── レンダリング ── */
+function getFiltered(){
+  return ALL.filter(t=>{
+    if(activeCategories.size>0&&!activeCategories.has(t.category))return false;
+    if(searchQuery){const q=searchQuery.toLowerCase();return(t.name+t.disease+t.positive+t.method+t.purpose).toLowerCase().includes(q);}
+    return true;
+  });
+}
+function render(){
+  const filtered=getFiltered();
+  document.getElementById('total-badge').textContent=filtered.length+'件';
+  const main=document.getElementById('main');
+  if(!filtered.length){main.innerHTML='<div class="empty">該当する検査が見つかりません</div>';return;}
+  const grouped={};CATS.forEach(c=>grouped[c]=[]);filtered.forEach(t=>grouped[t.category].push(t));
+  const q=searchQuery;
+  let html='';
+  CATS.forEach(cat=>{
+    const items=grouped[cat];if(!items.length)return;
+    html+='<section class="cat-section">'
+         +'<span class="cat-anchor" id="anchor-'+escHtml(cat)+'"></span>'
+         +'<div class="cat-header">'
+         +'<span class="cat-badge">'+escHtml(cat)+'</span>'
+         +'<span class="cat-count">'+items.length+'件</span>'
+         +'<div class="cat-line"></div></div>';
+    items.forEach(t=>{
+      const has=t.method||t.positive||t.purpose||t.disease;
+      const dp=t.disease?t.disease.split('、')[0].split('（')[0]:'';
+      const open=(q&&has)?' open':'';
+      html+='<div class="test-item'+open+'">'
+           +'<div class="test-summary" onclick="toggleItem(this.closest(\'.test-item\'))">'
+           +'<span class="test-name">'+hlText(t.name,q)+'</span>'
+           +(dp?'<span class="test-disease-tag">'+hlText(dp,q)+'</span>':'')
+           +'<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+           +'</div>';
+      if(has){
+        html+='<div class="test-detail"><div class="detail-grid">';
+        const blk=(cls,lbl,txt)=>'<div class="detail-block '+cls+'">'
+          +'<div class="detail-lbl">'+lbl+'</div>'
+          +'<div class="detail-txt" data-block-key="'+escHtml(t.name+'__'+cls)+'" onmousedown="startHold(event,this)" ontouchstart="startHold(event,this)" onmouseup="endHold()" ontouchend="endHold()" onmouseleave="endHold()" ontouchcancel="endHold()">'
+          +restoreHlHtml(fmtText(txt,q), t.name+'__'+cls)
+          +'</div></div>';
+        if(t.method)   html+=blk('method',  '方法',    t.method);
+        if(t.positive) html+=blk('positive','陽性所見',t.positive);
+        if(t.purpose)  html+=blk('purpose', '意義',    t.purpose);
+        if(t.disease)  html+=blk('disease', '鑑別疾患',t.disease);
+        html+='</div></div>';
+      }
+      html+='</div>';
+    });
+    html+='</section>';
+  });
+  main.innerHTML=html;
+  if(allExpanded&&!q)document.querySelectorAll('.test-item').forEach(el=>el.classList.add('open'));
+}
+
+/* ════════════════════════════════
+   マーキングシステム（長押し）
+════════════════════════════════ */
+const HL_KEY='tbs_hl_v3';
+const COLORS=['yellow','green','pink','blue'];
+let hlMode=false;
+let holdTimer=null;
+let pendingBlock=null;   // 長押し中のblockKey
+let pendingRange=null;   // 長押し時の選択Range（PC）
+let isTouch=false;
+let lastColor='yellow';
+
+function loadHl(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch(e){return{};}}
+function saveHl(d){localStorage.setItem(HL_KEY,JSON.stringify(d));}
+
+/* マーキングモード */
+function toggleHlMode(){
+  hlMode=!hlMode;
+  document.body.classList.toggle('hl-mode',hlMode);
+  document.getElementById('hl-mode-btn').classList.toggle('active',hlMode);
+  if(!hlMode)closePopover();
+}
+
+/* 長押し開始 */
+function startHold(e, blockEl){
+  if(!hlMode) return;
+  // touchかmouseかを判定
+  isTouch = e.type.startsWith('touch');
+  clearTimeout(holdTimer);
+  blockEl.classList.add('holding');
+  holdTimer = setTimeout(()=>{
+    blockEl.classList.remove('holding');
+    const key = blockEl.dataset.blockKey || '';
+    // PC: テキスト選択があればそれを使う
+    const sel = window.getSelection();
+    if(!isTouch && sel && !sel.isCollapsed && sel.rangeCount){
+      const range = sel.getRangeAt(0);
+      // detail-txt 内か確認
+      if(blockEl.contains(range.commonAncestorContainer)){
+        pendingBlock = blockEl;
+        pendingRange = range.cloneRange();
+        openPopover(e, key);
+        return;
+      }
+    }
+    // スマホ or 選択なし → ブロック全体をターゲット
+    pendingBlock = blockEl;
+    pendingRange = null;
+    openPopover(e, key);
+  }, isTouch ? 500 : 600);
+}
+function endHold(){
+  clearTimeout(holdTimer);
+  document.querySelectorAll('.holding').forEach(el=>el.classList.remove('holding'));
+}
+
+/* ポップオーバー表示 */
+function openPopover(e, blockKey){
+  const pop=document.getElementById('hl-popover');
+  // 削除ボタン：既存マークがある場合のみ表示
+  const hlData=loadHl();
+  const hasExisting=Object.keys(hlData).some(k=>k.startsWith(blockKey+'::'));
+  document.getElementById('hl-remove-btn').style.display = hasExisting ? 'block' : 'none';
+  // 前回色をselected
+  document.querySelectorAll('.hl-color-btn').forEach(b=>b.classList.toggle('selected',b.dataset.color===lastColor));
+  pop.classList.add('visible');
+  // 位置計算
+  let clientX, clientY;
+  if(e.touches && e.touches.length){ clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
+  else if(e.changedTouches && e.changedTouches.length){ clientX=e.changedTouches[0].clientX; clientY=e.changedTouches[0].clientY; }
+  else{ clientX=e.clientX; clientY=e.clientY; }
+  const popW=210, popH=120;
+  let top = window.scrollY + clientY - popH - 12;
+  let left = window.scrollX + clientX - popW/2;
+  if(top < window.scrollY + 60) top = window.scrollY + clientY + 12;
+  left = Math.max(8, Math.min(left, window.innerWidth - popW - 8));
+  pop.style.top=top+'px'; pop.style.left=left+'px';
+}
+function closePopover(){
+  document.getElementById('hl-popover').classList.remove('visible');
+  pendingBlock=null; pendingRange=null;
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#hl-popover') && !e.target.closest('.detail-txt')) closePopover();
+});
+
+/* ── 色を適用 ── */
+function applyFromPopover(color){
+  lastColor=color;
+  document.querySelectorAll('.hl-color-btn').forEach(b=>b.classList.toggle('selected',b.dataset.color===color));
+  if(!pendingBlock){ closePopover(); return; }
+  if(pendingRange){
+    // PC: 選択範囲に<span>をwrap
+    applyRangeHighlight(pendingBlock, pendingRange, color);
+  } else {
+    // スマホ: ブロック全体に色付け（既存マークをすべてその色に）
+    applyBlockHighlight(pendingBlock, color);
+  }
+  closePopover();
+}
+
+/* PC: 選択範囲マーキング */
+function applyRangeHighlight(blockEl, range, color){
+  try{
+    const span=document.createElement('span');
+    span.className='hl hl-'+color;
+    span.dataset.hlColor=color;
+    range.surroundContents(span);
+    span.addEventListener('click', onHlSpanClick);
+  }catch(err){
+    const frag=range.extractContents();
+    const span=document.createElement('span');
+    span.className='hl hl-'+color;
+    span.dataset.hlColor=color;
+    span.appendChild(frag);
+    range.insertNode(span);
+    span.addEventListener('click', onHlSpanClick);
+  }
+  persistBlock(blockEl);
+  window.getSelection()?.removeAllRanges();
+}
+
+/* スマホ: ブロック全体マーキング（テキストノードを色付きspanで包む） */
+function applyBlockHighlight(blockEl, color){
+  // 既存のhlスパンを解除してテキストを取り出す
+  blockEl.querySelectorAll('.hl').forEach(sp=>{
+    const p=sp.parentNode;
+    while(sp.firstChild) p.insertBefore(sp.firstChild,sp);
+    p.removeChild(sp);
+  });
+  blockEl.normalize();
+  // テキストノード全体をspanで包む
+  const walker=document.createTreeWalker(blockEl, NodeFilter.SHOW_TEXT);
+  const nodes=[];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    if(!node.textContent.trim()) return;
+    const span=document.createElement('span');
+    span.className='hl hl-'+color;
+    span.dataset.hlColor=color;
+    node.parentNode.insertBefore(span, node);
+    span.appendChild(node);
+    span.addEventListener('click', onHlSpanClick);
+  });
+  persistBlock(blockEl);
+}
+
+/* マークspanクリックで削除（マーキングモード中のみ） */
+function onHlSpanClick(e){
+  if(!hlMode) return;
+  e.stopPropagation();
+  const sp=e.currentTarget;
+  const blockEl=sp.closest('.detail-txt');
+  const p=sp.parentNode;
+  while(sp.firstChild) p.insertBefore(sp.firstChild,sp);
+  p.removeChild(sp);
+  p.normalize();
+  if(blockEl) persistBlock(blockEl);
+}
+
+/* ブロック全体削除 */
+function removeFromPopover(){
+  if(!pendingBlock){ closePopover(); return; }
+  pendingBlock.querySelectorAll('.hl').forEach(sp=>{
+    const p=sp.parentNode;
+    while(sp.firstChild) p.insertBefore(sp.firstChild,sp);
+    p.removeChild(sp);
+  });
+  pendingBlock.normalize();
+  persistBlock(pendingBlock);
+  closePopover();
+}
+
+/* localStorage保存 */
+function persistBlock(blockEl){
+  const key=blockEl.dataset.blockKey;
+  if(!key) return;
+  const d=loadHl();
+  // hlスパンの情報をシリアライズ（innerHTML形式）
+  d[key+'::html']=blockEl.innerHTML;
+  saveHl(d);
+}
+
+/* 復元：innerHTML */
+function restoreHlHtml(baseHtml, blockKey){
+  const d=loadHl();
+  const saved=d[blockKey+'::html'];
+  if(!saved) return baseHtml;
+  return saved;
+}
+
+/* マーキングモード中はhlスパンにイベントを再バインド */
+function bindHlEvents(){
+  document.querySelectorAll('.hl').forEach(sp=>{
+    sp.removeEventListener('click', onHlSpanClick);
+    sp.addEventListener('click', onHlSpanClick);
+  });
+}
+
+/* キーボード */
+document.addEventListener('keydown', e=>{
+  if(e.key==='m'&&!e.ctrlKey&&!e.metaKey&&document.activeElement.tagName!=='INPUT') toggleHlMode();
+});
+
+
+function closeExamModal() {
+  stopTimer();
+  projMode = false;
+  document.body.classList.remove('proj-mode');
+  document.getElementById('exam-modal').classList.remove('visible');
+}
+// オーバーレイ外クリックで閉じる
+document.getElementById('exam-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeExamModal();
+});
+document.getElementById('exam-detail-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeExamDetail();
+});
+
+/* ── セットアップ画面 ── */
+function renderExamSetup() {
+  const avail = ALL.filter(t => examState.selectedCats.has(t.category)).length;
+  const maxCount = Math.min(avail, 30);
+  const curCount = Math.min(examState.count, maxCount);
+  examState.count = curCount;
+
+  const catBtns = CATS_ALL.map(c => {
+    const active = examState.selectedCats.has(c) ? 'active' : '';
+    const cnt = ALL.filter(t => t.category === c).length;
+    return `<button class="cat-check-btn ${active}" onclick="toggleExamCat('${c}')">${c}（${cnt}）</button>`;
+  }).join('');
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header">
+      <h2>試験モード — 設定</h2>
+      <button class="modal-close" onclick="closeExamModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="setup-section">
+        <div class="setup-label">出題カテゴリ（複数選択可）</div>
+        <div class="cat-check-grid" id="cat-check-grid">${catBtns}</div>
+      </div>
+      <div class="setup-section">
+        <div class="setup-label">出題数</div>
+        <div class="count-row">
+          <input type="range" id="count-range" min="1" max="${maxCount}" value="${curCount}"
+            oninput="updateCount(this.value)">
+          <span class="count-val" id="count-val">${curCount}</span>
+        </div>
+        <div class="available-note" id="avail-note">選択中：${avail}問から ${curCount}問を出題</div>
+      </div>
+      <button class="setup-start-btn" id="start-btn" onclick="startExam()" ${avail === 0 ? 'disabled' : ''}>
+        試験を開始する
+      </button>
+    </div>`;
+}
+
+function toggleExamCat(cat) {
+  if (examState.selectedCats.has(cat)) {
+    if (examState.selectedCats.size > 1) examState.selectedCats.delete(cat);
+  } else {
+    examState.selectedCats.add(cat);
+  }
+  renderExamSetup();
+}
+
+function updateCount(val) {
+  examState.count = parseInt(val);
+  const avail = ALL.filter(t => examState.selectedCats.has(t.category)).length;
+  document.getElementById('count-val').textContent = val;
+  document.getElementById('avail-note').textContent = `選択中：${avail}問から ${val}問を出題`;
+}
+
+/* ── 試験開始 ── */
+function startExam() {
+  const pool = ALL.filter(t => examState.selectedCats.has(t.category));
+  // シャッフル
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  examState.questions = pool.slice(0, examState.count);
+  examState.answers = {};
+  examState.questions.forEach((_, i) => {
+    examState.answers[i] = { method:'', positive:'', purpose:'', disease:'', judge: null, showAnswer: false };
+  });
+  examState.phase = 'exam';
+  renderExam();
+}
+
+/* ── 試験画面 ── */
+function renderExam() {
+  const qs = examState.questions;
+  const judged = Object.values(examState.answers).filter(a => a.judge !== null).length;
+  const correct = Object.values(examState.answers).filter(a => a.judge === 'correct').length;
+  const pct = Math.round((judged / qs.length) * 100);
+
+  let items = qs.map((t, i) => {
+    const ans = examState.answers[i];
+    const fields = [
+      { key:'method',   lbl:'方法',     cls:'method' },
+      { key:'positive', lbl:'陽性所見', cls:'positive' },
+      { key:'purpose',  lbl:'意義',     cls:'purpose' },
+      { key:'disease',  lbl:'鑑別疾患', cls:'disease' },
+    ];
+    const fieldHtml = fields.map(f => {
+      if (!t[f.key]) return '';
+      return `<div class="exam-field ${f.cls}">
+        <div class="exam-field-lbl">${f.lbl}</div>
+        <textarea placeholder="${f.lbl}を入力…" oninput="saveAnswer(${i},'${f.key}',this.value)">${escHtml(ans[f.key])}</textarea>
+      </div>`;
+    }).join('');
+
+    const judgeClass = (j, target) => {
+      if (!ans.judge) return j === target ? j : '';
+      if (ans.judge === j) return `active-${j}`;
+      return j === target ? j : '';
+    };
+
+    const modelHtml = ans.showAnswer ? buildModelAnswer(t) : '';
+
+    return `<div class="exam-item" id="exam-item-${i}">
+      <div class="exam-item-header">
+        <span class="exam-item-num">Q${i+1}</span>
+        <span class="exam-item-name">${escHtml(t.name)}</span>
+        <span class="exam-item-cat">${escHtml(t.category)}</span>
+      </div>
+      <div class="exam-answer-area">
+        <div class="exam-fields">${fieldHtml}</div>
+        <button class="exam-show-answer-btn" onclick="toggleModelAnswer(${i})">
+          ${ans.showAnswer ? '▲ 模範解答を隠す' : '▼ 模範解答を見る'}
+        </button>
+        ${modelHtml}
+        <div class="exam-judge-row">
+          <button class="judge-btn correct ${judgeClass('correct','correct')}" onclick="setJudge(${i},'correct')">
+            ⭕ 正解
+          </button>
+          <button class="judge-btn incorrect ${judgeClass('incorrect','incorrect')}" onclick="setJudge(${i},'incorrect')">
+            ❌ 不正解
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header" style="position:sticky;top:0;z-index:10;">
+      <h2>試験中 — ${qs.length}問</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="exam-score-live">${correct}/${judged}問採点済</span>
+        <button class="modal-close" onclick="closeExamModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="exam-progress-bar"><div class="exam-progress-fill" style="width:${pct}%"></div></div>
+      <div class="exam-meta">
+        <span>${qs.length}問中 ${judged}問採点済み</span>
+        <span class="exam-score-live">正解 ${correct}問</span>
+      </div>
+      ${items}
+      <button class="exam-finish-btn" onclick="finishExam()">採点結果を見る</button>
+    </div>`;
+}
+
+function buildModelAnswer(t) {
+  const rows = [
+    t.method   ? `<div><div class="exam-model-lbl">方法</div>${escHtml(t.method).replace(/([①②③④⑤⑥⑦⑧⑨⑩※])/g,'<br>$1').replace(/^<br>/,'')}</div>` : '',
+    t.positive ? `<div><div class="exam-model-lbl">陽性所見</div>${escHtml(t.positive)}</div>` : '',
+    t.purpose  ? `<div><div class="exam-model-lbl">意義</div>${escHtml(t.purpose)}</div>` : '',
+    t.disease  ? `<div><div class="exam-model-lbl">鑑別疾患</div>${escHtml(t.disease)}</div>` : '',
+  ].filter(Boolean).join('');
+  return `<div class="exam-model-answer visible" style="display:block;">${rows}</div>`;
+}
+
+function saveAnswer(idx, key, val) {
+  examState.answers[idx][key] = val;
+}
+function toggleModelAnswer(idx) {
+  examState.answers[idx].showAnswer = !examState.answers[idx].showAnswer;
+  // テキストエリアの入力内容を保持したままpartial re-render
+  const item = document.getElementById(`exam-item-${idx}`);
+  if (!item) return;
+  const t = examState.questions[idx];
+  const ans = examState.answers[idx];
+  const btn = item.querySelector('.exam-show-answer-btn');
+  btn.textContent = ans.showAnswer ? '▲ 模範解答を隠す' : '▼ 模範解答を見る';
+  let modelEl = item.querySelector('.exam-model-answer');
+  if (ans.showAnswer) {
+    if (!modelEl) {
+      const div = document.createElement('div');
+      div.innerHTML = buildModelAnswer(t);
+      btn.insertAdjacentElement('afterend', div.firstChild);
+    }
+  } else {
+    if (modelEl) modelEl.remove();
+  }
+}
+function setJudge(idx, judge) {
+  examState.answers[idx].judge = examState.answers[idx].judge === judge ? null : judge;
+  // ボタンだけ差し替え
+  const item = document.getElementById(`exam-item-${idx}`);
+  const judged = Object.values(examState.answers).filter(a => a.judge !== null).length;
+  const correct = Object.values(examState.answers).filter(a => a.judge === 'correct').length;
+  if (item) {
+    const row = item.querySelector('.exam-judge-row');
+    const j = examState.answers[idx].judge;
+    row.querySelector('.judge-btn.correct').className   = `judge-btn correct${j==='correct'?' active-correct':''}`;
+    row.querySelector('.judge-btn.incorrect').className = `judge-btn incorrect${j==='incorrect'?' active-incorrect':''}`;
+  }
+  // ヘッダーのスコア更新
+  const scoreLive = document.querySelector('.exam-score-live');
+  if (scoreLive) scoreLive.textContent = `正解 ${correct}問`;
+  // meta行
+  const metas = document.querySelectorAll('.exam-meta span');
+  if (metas.length >= 2) {
+    metas[0].textContent = `${examState.questions.length}問中 ${judged}問採点済み`;
+    metas[1].textContent = `正解 ${correct}問`;
+  }
+}
+
+/* ── 結果画面 ── */
+function finishExam() {
+  examState.phase = 'result';
+  const qs = examState.questions;
+  const total = qs.length;
+  const judged = Object.values(examState.answers).filter(a => a.judge !== null).length;
+  const correct = Object.values(examState.answers).filter(a => a.judge === 'correct').length;
+  const incorrect = Object.values(examState.answers).filter(a => a.judge === 'incorrect').length;
+  const pct = judged > 0 ? Math.round((correct / judged) * 100) : 0;
+  const msg = pct >= 90 ? '🎉 素晴らしい！完璧に近い正答率です！'
+    : pct >= 70 ? '👍 よくできました！あと少しで完璧です。'
+    : pct >= 50 ? '📖 もう少し復習しましょう。'
+    : '💪 引き続き頑張りましょう！';
+
+  // SVG円グラフ
+  const r = 60, circ = 2 * Math.PI * r;
+  const fill = judged > 0 ? (correct / judged) * circ : 0;
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header">
+      <h2>試験結果</h2>
+      <button class="modal-close" onclick="closeExamModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="result-score-ring">
+        <div class="score-circle">
+          <svg viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="${r}" stroke="var(--accent-l)" stroke-width="10"/>
+            <circle cx="75" cy="75" r="${r}" stroke="var(--accent)" stroke-width="10"
+              stroke-dasharray="${fill} ${circ}"
+              stroke-dashoffset="${circ * 0.25}"
+              transform="rotate(-90 75 75)"/>
+          </svg>
+          <div class="score-num">${correct}</div>
+          <div class="score-denom">/ ${judged}問</div>
+        </div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="result-msg">${msg}</div>
+      <div class="result-breakdown">
+        <div class="result-card correct">
+          <div class="result-card-num">${correct}</div>
+          <div class="result-card-lbl">⭕ 正解</div>
+        </div>
+        <div class="result-card incorrect">
+          <div class="result-card-num">${incorrect}</div>
+          <div class="result-card-lbl">❌ 不正解</div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-num">${total - judged}</div>
+          <div class="result-card-lbl">未採点</div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-num">${total}</div>
+          <div class="result-card-lbl">出題数</div>
+        </div>
+      </div>
+      <div class="result-action-row">
+        <button class="result-btn primary" onclick="startExam()">もう一度</button>
+        <button class="result-btn secondary" onclick="renderExamSetup()">設定に戻る</button>
+      </div>
+    </div>`;
+}
+
+
+/* ════════════════════════════════════════
+   試験モード
+════════════════════════════════════════ */
+const EXAM_CATS = [...new Set(ALL.map(t => t.category))];
+let exam = {
+  selectedCats: new Set(EXAM_CATS),
+  count: 10,
+  questions: [],
+  judges: {},
+  revealed: {},
+  phase: 'setup',
+  timerEnabled: false,
+  timerMin: 3,
+  timerSec: 0,
+};
+
+/* ── タイマー状態 ── */
+let timerState = {
+  total: 0,      // 合計秒
+  remain: 0,     // 残り秒
+  paused: false,
+  interval: null,
+};
+
+function onTimerToggle() {
+  const enabled = document.getElementById('timer-enabled').checked;
+  exam.timerEnabled = enabled;
+  const inp = document.getElementById('timer-inputs');
+  if (inp) inp.classList.toggle('disabled', !enabled);
+}
+
+function readTimerInputs() {
+  const mEl = document.getElementById('timer-min');
+  const sEl = document.getElementById('timer-sec');
+  if (mEl) exam.timerMin = Math.max(0, parseInt(mEl.value) || 0);
+  if (sEl) exam.timerSec = Math.max(0, Math.min(59, parseInt(sEl.value) || 0));
+}
+
+function startTimer() {
+  if (!exam.timerEnabled) return;
+  readTimerInputs();
+  timerState.total  = exam.timerMin * 60 + exam.timerSec;
+  timerState.remain = timerState.total;
+  timerState.paused = false;
+  clearInterval(timerState.interval);
+  updateTimerUI();
+  timerState.interval = setInterval(tickTimer, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerState.interval);
+  timerState.interval = null;
+}
+
+function tickTimer() {
+  if (timerState.paused) return;
+  if (timerState.remain <= 0) {
+    stopTimer();
+    onTimerExpired();
+    return;
+  }
+  timerState.remain--;
+  updateTimerUI();
+}
+
+function updateTimerUI() {
+  const clock = document.getElementById('timer-clock');
+  const sub   = document.getElementById('timer-sub');
+  const fill  = document.getElementById('timer-donut-fill');
+  if (!clock) return;
+  const r = timerState.remain;
+  const m = Math.floor(r / 60);
+  const s = r % 60;
+  clock.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const pct    = timerState.total > 0 ? (r / timerState.total) : 1;
+  const pctNum = Math.round(pct * 100);
+  const danger  = pctNum <= 10;
+  const warning = pctNum <= 25 && !danger;
+  const state   = danger ? ' danger' : warning ? ' warning' : '';
+  clock.className = 'timer-clock' + state;
+  if (sub) sub.textContent = '残り ' + pctNum + '%';
+  if (fill) {
+    const circ = 125.66;
+    fill.setAttribute('stroke-dasharray', (pct * circ) + ' ' + circ);
+    fill.className.baseVal = 'timer-donut-fill' + state;
+  }
+}
+
+function toggleTimerPause() {
+  timerState.paused = !timerState.paused;
+  const btn = document.getElementById('timer-pause-btn');
+  if (btn) btn.textContent = timerState.paused ? '再開' : '一時停止';
+}
+
+function onTimerExpired() {
+  const banner = document.getElementById('timer-expired-banner');
+  if (banner) banner.classList.add('visible');
+  const clock = document.getElementById('timer-clock');
+  if (clock) { clock.textContent = '00:00'; clock.className = 'timer-clock danger'; }
+  const sub = document.getElementById('timer-sub');
+  if (sub) sub.textContent = '残り 0%';
+  const fill = document.getElementById('timer-donut-fill');
+  if (fill) { fill.setAttribute('stroke-dasharray','0 125.66'); fill.className.baseVal='timer-donut-fill danger'; }
+}
+
+/* モーダル開閉 */
+function openExamSetup() {
+  exam.phase = 'setup';
+  exam.selectedCats = new Set(EXAM_CATS);
+  renderSetup();
+  document.getElementById('exam-modal').classList.add('visible');
+  if (sidebarOpen) toggleSidebar();
+}
+function closeExamModal() {
+  stopTimer();
+  projMode = false;
+  document.body.classList.remove('proj-mode');
+  document.getElementById('exam-modal').classList.remove('visible');
+}
+document.getElementById('exam-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeExamModal();
+});
+document.getElementById('exam-detail-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeExamDetail();
+});
+
+/* ── セットアップ ── */
+function renderSetup() {
+  const avail = ALL.filter(t => exam.selectedCats.has(t.category)).length;
+  const maxN  = Math.min(avail, 41);
+  const cur   = Math.min(exam.count, maxN);
+  exam.count  = cur;
+
+  const catBtns = EXAM_CATS.map(c => {
+    const n = ALL.filter(t => t.category === c).length;
+    const a = exam.selectedCats.has(c) ? 'active' : '';
+    return `<button class="cat-check-btn ${a}" onclick="toggleExamCat('${c}')">${c}（${n}）</button>`;
+  }).join('');
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header">
+      <h2>試験モード — 設定</h2>
+      <button class="modal-close" onclick="closeExamModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="setup-section">
+        <div class="setup-label">出題カテゴリ（複数選択可）</div>
+        <div class="cat-check-grid">${catBtns}</div>
+      </div>
+      <div class="setup-section">
+        <div class="setup-label">出題数</div>
+        <div class="count-row">
+          <input type="range" id="count-range" min="1" max="${maxN}" value="${cur}"
+            oninput="onCountChange(this.value)">
+          <span class="count-val" id="count-val">${cur}</span>
+        </div>
+        <div class="available-note" id="avail-note">${avail}問中 ${cur}問を出題（ランダム抽出）</div>
+      </div>
+      <div class="setup-section">
+        <div class="setup-label">タイマー（デフォルト3分）</div>
+        <div class="timer-setup-row">
+          <label class="timer-toggle">
+            <input type="checkbox" id="timer-enabled" onchange="onTimerToggle()">
+            タイマーを使う
+          </label>
+        </div>
+        <div class="timer-inputs" id="timer-inputs">
+          <label>制限時間</label>
+          <input type="number" class="timer-num-input" id="timer-min" value="${exam.timerMin}" min="0" max="99" oninput="exam.timerMin=parseInt(this.value)||0">
+          <label>分</label>
+          <input type="number" class="timer-num-input" id="timer-sec" value="${exam.timerSec}" min="0" max="59" oninput="exam.timerSec=Math.min(59,parseInt(this.value)||0)">
+          <label>秒</label>
+        </div>
+      </div>
+      <button class="setup-start-btn" ${avail===0?'disabled':''} onclick="startExam()">
+        試験を開始する →
+      </button>
+    </div>`;
+  // timer入力値をJSで復元（innerHTML書き換え後）
+  const _cb = document.getElementById('timer-enabled');
+  const _ti = document.getElementById('timer-inputs');
+  const _mn = document.getElementById('timer-min');
+  const _sc = document.getElementById('timer-sec');
+  if (_cb) _cb.checked = exam.timerEnabled;
+  if (_ti) _ti.classList.toggle('disabled', !exam.timerEnabled);
+  if (_mn) _mn.value = exam.timerMin;
+  if (_sc) _sc.value = exam.timerSec;
+}
+
+function toggleExamCat(cat) {
+  if (exam.selectedCats.has(cat)) {
+    if (exam.selectedCats.size > 1) exam.selectedCats.delete(cat);
+  } else {
+    exam.selectedCats.add(cat);
+  }
+  renderSetup();
+}
+function onCountChange(v) {
+  exam.count = parseInt(v);
+  const avail = ALL.filter(t => exam.selectedCats.has(t.category)).length;
+  document.getElementById('count-val').textContent = v;
+  document.getElementById('avail-note').textContent = `${avail}問中 ${v}問を出題（ランダム抽出）`;
+}
+
+/* ── 試験開始 ── */
+function startExam() {
+  const pool = ALL.filter(t => exam.selectedCats.has(t.category));
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  exam.questions = pool.slice(0, exam.count);
+  exam.judges = {};
+  exam.revealed = {};
+  exam.questions.forEach((_, i) => { exam.judges[i] = null; exam.revealed[i] = {}; });
+  exam.phase = 'exam';
+  if (exam.timerEnabled) readTimerInputs();
+  renderExamList();
+  startTimer();
+}
+
+/* ── 試験リスト画面 ── */
+function judgeEmoji(j) {
+  return j === 'good' ? '○' : j === 'half' ? '▲' : j === 'bad' ? '×' : '－';
+}
+let currentDetailIdx = null;
+
+function openExamDetail(idx) {
+  currentDetailIdx = idx;
+  const t = exam.questions[idx];
+  const rv = exam.revealed[idx] || {};
+  document.getElementById('edm-num').textContent = `Q${idx+1}`;
+  document.getElementById('edm-name').textContent = t.name;
+
+  // 陽性所見
+  const posBlock = document.getElementById('edm-positive-block');
+  const posBtn   = document.getElementById('edm-positive-btn');
+  const posVal   = document.getElementById('edm-positive-val');
+  if (t.positive) {
+    posBlock.style.display = '';
+    if (rv.positive) {
+      posBtn.style.display = 'none';
+      posVal.textContent = t.positive;
+      posVal.classList.add('visible');
+    } else {
+      posBtn.style.display = '';
+      posVal.classList.remove('visible');
+      posVal.textContent = '';
+    }
+  } else {
+    posBlock.style.display = 'none';
+  }
+
+  // 鑑別疾患
+  const disBlock = document.getElementById('edm-disease-block');
+  const disBtn   = document.getElementById('edm-disease-btn');
+  const disVal   = document.getElementById('edm-disease-val');
+  if (t.disease) {
+    disBlock.style.display = '';
+    if (rv.disease) {
+      disBtn.style.display = 'none';
+      disVal.textContent = t.disease;
+      disVal.classList.add('visible');
+    } else {
+      disBtn.style.display = '';
+      disVal.classList.remove('visible');
+      disVal.textContent = '';
+    }
+  } else {
+    disBlock.style.display = 'none';
+  }
+
+  updateDetailJudgeBtns(idx);
+  document.getElementById('exam-detail-overlay').classList.add('visible');
+}
+
+function closeExamDetail() {
+  document.getElementById('exam-detail-overlay').classList.remove('visible');
+  currentDetailIdx = null;
+}
+
+function navDetail(dir) {
+  if (currentDetailIdx === null) return;
+  const next = (currentDetailIdx + dir + exam.questions.length) % exam.questions.length;
+  openExamDetail(next);
+}
+
+function revealDetail(field) {
+  if (currentDetailIdx === null) return;
+  if (!exam.revealed[currentDetailIdx]) exam.revealed[currentDetailIdx] = {};
+  exam.revealed[currentDetailIdx][field] = true;
+  const btn = document.getElementById(`edm-${field}-btn`);
+  const val = document.getElementById(`edm-${field}-val`);
+  const t   = exam.questions[currentDetailIdx];
+  if (btn) btn.style.display = 'none';
+  if (val) { val.textContent = t[field]; val.classList.add('visible'); }
+  // カードのミニチップ更新
+  updateCardChips(currentDetailIdx);
+}
+
+function updateCardChips(idx) {
+  const card = document.getElementById('er-' + idx);
+  if (!card) return;
+  const t  = exam.questions[idx];
+  const rv = exam.revealed[idx] || {};
+  let bottom = card.querySelector('.exam-card-bottom');
+  const posChip = t.positive
+    ? `<span class="exam-mini-chip ${rv.positive?'revealed-pos':''}">${rv.positive?'陽性所見 ✓':'陽性所見 ？'}</span>`
+    : '';
+  const disChip = t.disease
+    ? `<span class="exam-mini-chip ${rv.disease?'revealed-dis':''}">${rv.disease?'鑑別疾患 ✓':'鑑別疾患 ？'}</span>`
+    : '';
+  if (posChip || disChip) {
+    if (!bottom) {
+      bottom = document.createElement('div');
+      bottom.className = 'exam-card-bottom';
+      card.appendChild(bottom);
+    }
+    bottom.innerHTML = posChip + disChip;
+  }
+}
+
+function setJudgeFromDetail(val) {
+  if (currentDetailIdx === null) return;
+  setJudge(currentDetailIdx, val);
+}
+
+function updateDetailJudgeBtns(idx) {
+  if (currentDetailIdx !== idx) return;
+  const j = exam.judges[idx];
+  ['good','half','bad'].forEach(v => {
+    const btn = document.getElementById('edm-j-' + v);
+    if (btn) btn.classList.toggle('selected', j === v);
+  });
+}
+
+
+function scoreCount() {
+  const vals = Object.values(exam.judges);
+  return {
+    good:    vals.filter(v => v === 'good').length,
+    half:    vals.filter(v => v === 'half').length,
+    bad:     vals.filter(v => v === 'bad').length,
+    none:    vals.filter(v => v === null).length,
+    judged:  vals.filter(v => v !== null).length,
+    total:   exam.questions.length
+  };
+}
+
+
+let projMode = false;
+
+function toggleProjMode() {
+  projMode = !projMode;
+  document.body.classList.toggle('proj-mode', projMode);
+  // ボタンだけ更新
+  const btn = document.getElementById('proj-btn');
+  if (btn) {
+    btn.classList.toggle('active', projMode);
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>${projMode?'通常表示':'投影モード'}`;
+  }
+}
+
+function shortName(name) {
+  const map = {
+    '下肢伸展挙上テスト（SLR）': 'SLRテスト',
+    '大腿神経伸展テスト（FNS）': 'FNSテスト',
+  };
+  return map[name] || name;
+}
+function renderExamList() {
+  const sc = scoreCount();
+  const judgeEmoji = j => j==='good'?'○':j==='half'?'▲':j==='bad'?'×':'';
+  const judgeClass = j => j ? `judged-${j}` : '';
+
+  const cards = exam.questions.map((t, i) => {
+    const j = exam.judges[i];
+    const rv = exam.revealed[i] || {};
+    const posChip = t.positive
+      ? `<span class="exam-mini-chip ${rv.positive?'revealed-pos':''}">${rv.positive?'陽性所見✓':'陽性所見？'}</span>`
+      : '';
+    const disChip = t.disease
+      ? `<span class="exam-mini-chip ${rv.disease?'revealed-dis':''}">${rv.disease?'鑑別疾患✓':'鑑別疾患？'}</span>`
+      : '';
+    return `<div class="exam-card ${judgeClass(j)}" id="er-${i}">
+      <div class="exam-card-top">
+        <span class="exam-card-num">${i+1}</span>
+        <span class="exam-card-name" onclick="openExamDetail(${i})">${escHtml(shortName(t.name))}</span>
+      </div>
+      <div class="exam-card-bottom">
+        ${posChip}${disChip}
+        <div class="card-judge-group" style="margin-left:auto">
+          <button class="cjbtn j-good ${j==='good'?'selected':''}" onclick="setJudge(${i},'good')" title="○">○</button>
+          <button class="cjbtn j-half ${j==='half'?'selected':''}" onclick="setJudge(${i},'half')" title="▲">▲</button>
+          <button class="cjbtn j-bad  ${j==='bad' ?'selected':''}" onclick="setJudge(${i},'bad')"  title="×">×</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header" style="position:sticky;top:0;z-index:10;">
+      <h2>試験 — ${exam.questions.length}問</h2>
+      <div class="modal-header-right">
+        <button class="proj-toggle-btn${projMode?' active':''}" id="proj-btn" onclick="toggleProjMode()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+          ${projMode?'通常表示':'投影モード'}
+        </button>
+        <button class="modal-close" onclick="closeExamModal()">✕</button>
+      </div>
+    </div>
+    <div class="timer-bar${exam.timerEnabled?' visible':''}" id="timer-bar">
+      <div class="timer-donut">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle class="timer-donut-track" cx="26" cy="26" r="20"/>
+          <circle class="timer-donut-fill" id="timer-donut-fill" cx="26" cy="26" r="20"
+            stroke-dasharray="125.66 125.66"/>
+        </svg>
+      </div>
+      <div>
+        <div class="timer-clock" id="timer-clock">--:--</div>
+        <div class="timer-sub" id="timer-sub">残り時間</div>
+      </div>
+      <button class="timer-pause-btn" id="timer-pause-btn" onclick="toggleTimerPause()">一時停止</button>
+    </div>
+    <div class="timer-expired-banner" id="timer-expired-banner">⏰ 時間切れ！　採点して結果を確認してください</div>
+    <div class="exam-score-bar" id="exam-score-bar">
+      ${renderScoreBar(sc)}
+    </div>
+    <div class="modal-body">
+      <div class="exam-grid" id="exam-grid">${cards}</div>
+      <button class="setup-start-btn" onclick="finishExam()" style="background:#2d5fbf;">
+        結果を見る →
+      </button>
+    </div>`;
+}
+
+function renderScoreBar(sc) {
+  return `<span class="esb-chip esb-good">○ ${sc.good}</span>
+    <span class="esb-chip esb-half">▲ ${sc.half}</span>
+    <span class="esb-chip esb-bad">× ${sc.bad}</span>
+    <span class="esb-spacer"></span>
+    <span class="esb-chip esb-none">未評価 ${sc.none}</span>
+    <span class="esb-total">${sc.judged}/${sc.total}</span>`;
+}
+
+function setJudge(idx, val) {
+  exam.judges[idx] = exam.judges[idx] === val ? null : val;
+  const j = exam.judges[idx];
+  // カードのクラス更新
+  const card = document.getElementById('er-' + idx);
+  if (card) {
+    card.className = 'exam-card' + (j ? ' judged-' + j : '');
+    // ○▲×ボタンのselected状態更新
+    card.querySelectorAll('.cjbtn').forEach(b => {
+      const bv = b.classList.contains('j-good')?'good':b.classList.contains('j-half')?'half':'bad';
+      b.classList.toggle('selected', j === bv);
+    });
+  }
+  // スコアバー更新
+  const bar = document.getElementById('exam-score-bar');
+  if (bar) bar.innerHTML = renderScoreBar(scoreCount());
+  // 詳細モーダルのボタンも更新
+  updateDetailJudgeBtns(idx);
+}
+
+/* ── 結果画面 ── */
+function finishExam() {
+  stopTimer();
+  exam.phase = 'result';
+  const sc = scoreCount();
+  const pct = sc.total > 0 ? Math.round((sc.good / sc.total) * 100) : 0;
+  const msg = pct >= 90 ? '🎉 完璧です！素晴らしい理解度です！'
+    : pct >= 70 ? '👍 よくできました！少し復習して完璧にしよう。'
+    : pct >= 50 ? '📖 半分以上できています。苦手な箇所を重点的に。'
+    : '💪 まだまだこれから！繰り返し練習しましょう。';
+
+  // ドーナツグラフ
+  const R = 54, circ = 2 * Math.PI * R;
+  const seg = (n, col, offset) => n > 0
+    ? `<circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="14"
+        stroke-dasharray="${(n/sc.total)*circ} ${circ}"
+        stroke-dashoffset="${-offset}" stroke-linecap="butt"/>`
+    : '';
+  const gArc = (sc.good / sc.total) * circ;
+  const hArc = (sc.half / sc.total) * circ;
+  const bArc = (sc.bad  / sc.total) * circ;
+  const nArc = (sc.none / sc.total) * circ;
+  const donut = `<svg width="140" height="140" viewBox="0 0 140 140">
+    <circle cx="70" cy="70" r="${R}" fill="none" stroke="#eee" stroke-width="14"/>
+    ${seg(sc.good, '#4da870', circ*0.25)}
+    ${seg(sc.half, '#d4a800', circ*0.25 - gArc)}
+    ${seg(sc.bad,  '#cc5533', circ*0.25 - gArc - hArc)}
+    ${seg(sc.none, '#ccc',    circ*0.25 - gArc - hArc - bArc)}
+  </svg>`;
+
+  // 詳細リスト
+  const detail = exam.questions.map((t, i) => {
+    const j = exam.judges[i];
+    const em = j === 'good' ? '○' : j === 'half' ? '▲' : j === 'bad' ? '×' : '－';
+    const col = j === 'good' ? '#0a4a2a' : j === 'half' ? '#6a4a00' : j === 'bad' ? '#6b1a00' : '#aaa';
+    return `<div class="result-detail-item">
+      <span class="rdi-num">${i+1}</span>
+      <div style="flex:1;min-width:0;">
+        <div class="rdi-name">${escHtml(t.name)}</div>
+      </div>
+      <span class="rdi-badge" style="color:${col};font-size:1.1rem;">${em}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('exam-modal-inner').innerHTML = `
+    <div class="modal-header">
+      <h2>試験結果</h2>
+      <button class="modal-close" onclick="closeExamModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="result-donut">
+        ${donut}
+        <div class="result-score-txt">${sc.good} / ${sc.total}</div>
+        <div class="result-score-sub">○ 正解数 / 出題数　（${pct}%）</div>
+      </div>
+      <div class="result-msg">${msg}</div>
+      <div class="result-chips">
+        <div class="result-chip rg"><div class="rc-num">${sc.good}</div><div class="rc-lbl">○ できた</div></div>
+        <div class="result-chip rh"><div class="rc-num">${sc.half}</div><div class="rc-lbl">▲ だいたい</div></div>
+        <div class="result-chip rb"><div class="rc-num">${sc.bad}</div> <div class="rc-lbl">× できなかった</div></div>
+      </div>
+      <div class="result-detail-list">${detail}</div>
+      <div class="result-actions">
+        <button class="result-btn primary" onclick="startExam()">もう一度</button>
+        <button class="result-btn secondary" onclick="renderSetup()">設定に戻る</button>
+      </div>
+    </div>`;
+}
+
+render();
+// 復元後にイベントバインド
+setTimeout(bindHlEvents, 100);
+</script>
+
+</div>
+
+</body>
+</html>
