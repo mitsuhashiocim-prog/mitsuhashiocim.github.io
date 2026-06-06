@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鍼灸学習ツール</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: #f0f4f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      color: #1D9E75;
+      margin-bottom: 8px;
+    }
+    header p {
+      color: #6b6b67;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 720px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid rgba(0,0,0,0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: #1a1a18;
+      margin-bottom: 8px;
+    }
+    .card p {
+      font-size: 0.88rem;
+      color: #6b6b67;
+      line-height: 1.6;
+    }
+    .card.green { border-top: 4px solid #1D9E75; }
+    .card.blue  { border-top: 4px solid #0a3d7c; }
+    footer {
+      margin-top: 48px;
+      color: #9a9a95;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>鍼灸学習ツール</h1>
+    <p>鍼灸学生のための学習支援アプリ集</p>
+  </header>
 
+  <div class="grid">
+    <a class="card green" href="https://mitsuhashiocim.github.io/atm-kakomondai/">
+      <div class="card-icon">📝</div>
+      <h2>鍼灸国家試験過去問</h2>
+      <p>国家試験の過去問を繰り返し練習できる学習アプリです。</p>
+    </a>
+
+    <a class="card blue" href="https://mitsuhashiocim.github.io/atm-tosyukensa/">
+      <div class="card-icon">🦴</div>
+      <h2>整形外科的テストナビ</h2>
+      <p>整形外科的テストの手技・目的・陽性所見を確認できるナビゲーターです。</p>
+    </a>
+  </div>
+
+  <footer>© 2026 mitsuhashiocim</footer>
+</body>
+</html>
